@@ -57,7 +57,10 @@
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            /* 核心：移动端优先两列，最小宽度适配 */
+            grid-template-columns: repeat(2, 1fr);
+            /* 兜底：屏幕过小时自动调整（可选） */
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 1.5rem;
             max-width: 800px;
             width: 100%;
@@ -122,12 +125,37 @@
             background: #8b3a3a;
         }
 
+        /* 响应式调整：仅在超小屏（如320px以下）微调，保持两列 */
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.2rem;
             }
+            /* 移除原1列规则，改为强制两列 */
             .grid-container {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                /* 可选：超小屏缩小间距，提升体验 */
+                gap: 1rem;
+            }
+            /* 可选：移动端缩小卡片高度，适配屏幕 */
+            .card {
+                height: 160px;
+            }
+            .card-title {
+                font-size: 1.1rem;
+            }
+            .card-icon {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        /* 可选：针对320px以下超小屏，进一步优化 */
+        @media (max-width: 375px) {
+            .grid-container {
+                gap: 0.8rem;
+            }
+            .card {
+                height: 140px;
             }
         }
     </style>
@@ -140,7 +168,7 @@
     </div>
 
     <div class="grid-container">
-        <a href="#today" class="card">
+        <a href="./today/1.html" class="card">
             <svg class="card-icon" viewBox="0 0 24 24" fill="white">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
             </svg>
