@@ -3,236 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>今日礼乐齐鲁</title>
+    <title>每日文物 - Apple 风格</title>
     <style>
+        /* 全局重置 & 苹果风格基础配置 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "SimSun", "Microsoft YaHei", serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background-color: #1e1e1e;
-            color: #e8dcc5;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        /* 整体容器，控制最大宽度 */
-        .app-container {
-            width: 100%;
-            max-width: 420px;
-            background-color: #2d2d2d;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-        }
-
-        /* 顶部导航栏 */
-        .top-bar {
-            background-color: #2d2d2d;
-            padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid #444;
-        }
-
-        .top-bar h1 {
-            font-size: 1.4rem;
-            color: #e8dcc5;
-            font-weight: 500;
-        }
-
-        /* 日期栏 */
-        .date-bar {
-            background-color: #282828;
-            padding: 10px 15px;
-            text-align: center;
-            font-size: 1rem;
-            color: #b48a4c;
-        }
-
-        /* 主图区域 */
-        .main-image {
-            position: relative;
-            width: 100%;
-            height: 320px;
-            overflow: hidden;
-        }
-
-        .main-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.85);
-        }
-
-        .main-image .arrow {
-            position: absolute;
-            right: 18px;
-            bottom: 18px;
-            width: 36px;
-            height: 36px;
-            background-color: rgba(0,0,0,0.6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.4rem;
-            cursor: pointer;
-        }
-
-        .main-image .detail {
-            position: absolute;
-            right: 66px;
-            bottom: 18px;
-            color: white;
-            font-size: 1rem;
-            background-color: rgba(0,0,0,0.6);
-            padding: 6px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        /* 文物信息区 */
-        .relic-info {
-            background-color: #282828;
-            padding: 20px;
-            border-bottom: 1px solid #444;
-        }
-
-        .relic-name {
-            font-size: 1.6rem;
-            color: #d4af37;
-            margin-bottom: 8px;
-        }
-
-        .relic-meta {
-            font-size: 1rem;
-            color: #a08668;
-            margin-bottom: 15px;
-        }
-
-        .relic-quote {
-            background-color: #333;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            color: #e8dcc5;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .relic-quote .date-text {
-            font-size: 1rem;
-            color: #b48a4c;
-            margin-bottom: 10px;
-        }
-
-        /* 底部互动栏 */
-        .actions {
-            background-color: #2d2d2d;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        .action-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #e8dcc5;
-            font-size: 1rem;
+            padding: 20px;
+        }
+
+        /* 头部标题（苹果风格轻量化） */
+        .header {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1d1d1f;
+        }
+
+        .header p {
+            font-size: 17px;
+            color: #86868b;
+        }
+
+        /* 文物卡片（核心容器，苹果磨砂/圆角风格） */
+        .relic-card {
+            width: 100%;
+            max-width: 800px;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .relic-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* 文物图片容器 */
+        .relic-img-wrapper {
+            width: 100%;
+            height: 450px;
+            overflow: hidden;
+        }
+
+        .relic-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .relic-card:hover .relic-img {
+            transform: scale(1.02);
+        }
+
+        /* 文物信息区域 */
+        .relic-info {
+            padding: 30px;
+        }
+
+        .relic-name {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1d1d1f;
+        }
+
+        .relic-desc {
+            font-size: 17px;
+            line-height: 1.6;
+            color: #424245;
+            margin-bottom: 20px;
+        }
+
+        .relic-date {
+            font-size: 15px;
+            color: #86868b;
+        }
+
+        /* 苹果风格按钮容器 */
+        .btn-group {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 30px;
+            display: flex;
+            gap: 16px;
+            padding: 0 10px;
+        }
+
+        /* 苹果风格按钮通用样式 */
+        .apple-btn {
+            flex: 1;
+            height: 48px;
+            border-radius: 24px;
+            border: none;
+            font-size: 17px;
+            font-weight: 500;
             cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .action-item i {
-            font-size: 1.4rem;
-            margin-bottom: 6px;
+        /* 返回主页按钮（苹果浅灰风格） */
+        .home-btn {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
-        /* 电脑端适配 */
-        @media (min-width: 768px) {
-            .app-container {
-                max-width: 480px;
+        .home-btn:hover {
+            background-color: #e8e8ed;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 分享按钮（苹果蓝色风格，匹配iOS系统按钮） */
+        .share-btn {
+            background-color: #0071e3;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3);
+        }
+
+        .share-btn:hover {
+            background-color: #0077ed;
+            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.4);
+        }
+
+        /* 按钮图标（简化版，模拟苹果图标风格） */
+        .btn-icon {
+            font-size: 20px;
+        }
+
+        /* 响应式适配（苹果风格多端兼容） */
+        @media (max-width: 768px) {
+            .relic-img-wrapper {
+                height: 300px;
             }
-            .main-image {
-                height: 360px;
+
+            .relic-info {
+                padding: 20px;
             }
+
             .relic-name {
-                font-size: 1.8rem;
+                font-size: 24px;
             }
-            .relic-quote {
-                font-size: 1.2rem;
+
+            .relic-desc {
+                font-size: 16px;
+            }
+
+            .apple-btn {
+                height: 44px;
+                font-size: 16px;
             }
         }
 
-        /* 移动端适配 */
         @media (max-width: 480px) {
-            .app-container {
-                max-width: 100%;
-                border-radius: 0;
+            .relic-img-wrapper {
+                height: 220px;
             }
-            .main-image {
-                height: 280px;
+
+            .header h1 {
+                font-size: 28px;
             }
-            .relic-name {
-                font-size: 1.4rem;
+
+            .btn-group {
+                flex-direction: column;
+                gap: 12px;
             }
-            .relic-quote {
-                font-size: 1rem;
+
+            .apple-btn {
+                height: 40px;
             }
         }
     </style>
-    <!-- 引入Font Awesome图标库 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="app-container">
-        <div class="top-bar">
-            <h1>今日礼乐齐鲁</h1>
-        </div>
+    <div class="header">
+        <h1>每日文物</h1>
+        <p>每日探索一件珍贵文物，感受历史的温度</p>
+    </div>
 
-        <div class="date-bar">
-            二零二六年 一月二日
+    <div class="relic-card">
+        <div class="relic-img-wrapper">
+            <img id="relicImg" class="relic-img" src="" alt="每日文物">
         </div>
-
-        <div class="main-image">
-            <img src="https://picsum.photos/id/175/800/500" alt="天风海涛琴">
-            <div class="arrow">
-                <i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="detail">详情</div>
-        </div>
-
         <div class="relic-info">
-            <div class="relic-name">天风海涛琴</div>
-            <div class="relic-meta">唐代 | 山东省博物馆</div>
-            <div class="relic-quote">
-                <div class="date-text">圣宋隆兴甲申重修，大唐雷威亲斫</div>
-                今日，宜同休共成。
-            </div>
-        </div>
-
-        <div class="actions">
-            <div class="action-item">
-                <i class="fas fa-comment"></i>
-                <span>42</span>
-            </div>
-            <div class="action-item">
-                <i class="fas fa-heart"></i>
-                <span>409</span>
-            </div>
-            <div class="action-item">
-                <i class="fas fa-share-alt"></i>
-                <span>分享</span>
-            </div>
+            <h2 id="relicName" class="relic-name"></h2>
+            <p id="relicDesc" class="relic-desc"></p>
+            <p class="relic-date">今日推荐：<span id="todayDate"></span></p>
         </div>
     </div>
+
+    <!-- 苹果风格按钮组 -->
+    <div class="btn-group">
+        <button class="apple-btn home-btn">
+            <span class="btn-icon">🏠</span>
+            <span>返回主页</span>
+        </button>
+        <button class="apple-btn share-btn">
+            <span class="btn-icon">📤</span>
+            <span>分享到朋友圈</span>
+        </button>
+    </div>
+
+    <script>
+        // 1. 文物数据列表（可自行扩展，按顺序每日轮播）
+        const relicList = [
+            {
+                img: "https://picsum.photos/id/1015/800/450", // 示例图，替换为真实文物图片
+                name: "青铜神树",
+                desc: "青铜神树为商代晚期文物，1986年出土于四川广汉三星堆遗址，共有八棵，其中一号神树高达3.96米，是全世界已发现的最大的单件青铜文物。神树造型奇特，分层有枝，枝上有果、有鸟，充满了神秘的古蜀文化色彩，被认为是古蜀人沟通天地的神物。"
+            },
+            {
+                img: "https://picsum.photos/id/1018/800/450",
+                name: "千里江山图",
+                desc: "《千里江山图》是北宋王希孟创作的绢本设色画，现收藏于北京故宫博物院。该画作以长卷形式，描绘了连绵的群山冈峦和浩渺的江河湖水，于青绿山水技法中融入了赭石色，画面雄浑壮阔，色彩绚丽，是中国十大传世名画之一。"
+            },
+            {
+                img: "https://picsum.photos/id/1019/800/450",
+                name: "后母戊鼎",
+                desc: "后母戊鼎（原称司母戊鼎）是商后期铸品，1939年出土于河南安阳殷墟武官村，现藏于中国国家博物馆。鼎高133厘米、口长110厘米、口宽79厘米，重832.84千克，是迄今世界上出土最大、最重的青铜礼器，享有“镇国之宝”的美誉。"
+            },
+            {
+                img: "https://picsum.photos/id/1023/800/450",
+                name: "清明上河图",
+                desc: "《清明上河图》为北宋画家张择端仅见的存世精品，属国宝级文物，现藏于北京故宫博物院。该画宽24.8厘米、长528.7厘米，以长卷形式，生动记录了北宋都城东京（今开封）的城市面貌和当时社会各阶层人民的生活状况，是北宋时期都城东京繁荣的见证。"
+            },
+            {
+                img: "https://picsum.photos/id/1025/800/450",
+                name: "越王勾践剑",
+                desc: "越王勾践剑是春秋晚期越国青铜器，1965年出土于湖北江陵望山楚墓群中，现藏于湖北省博物馆。剑长55.7厘米，宽4.6厘米，剑身布满菱形暗纹，剑格镶嵌绿松石，历经两千余年依然锋利无比，被誉为“天下第一剑”。"
+            }
+            // 可继续添加更多文物数据
+        ];
+
+        // 2. 获取今日日期并计算索引（实现每日切换）
+        function getTodayRelicIndex() {
+            // 获取当前日期的时间戳（仅按日期计算，忽略时分秒）
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const todayTime = today.getTime();
+            
+            // 基准日期（可自定义，比如数据上线日期）
+            const baseDate = new Date(2024, 0, 1); // 2024年1月1日
+            baseDate.setHours(0, 0, 0, 0);
+            const baseTime = baseDate.getTime();
+            
+            // 计算相差的天数
+            const dayDiff = Math.floor((todayTime - baseTime) / (24 * 60 * 60 * 1000));
+            
+            // 按文物列表长度取模，实现循环轮播
+            return dayDiff % relicList.length;
+        }
+
+        // 3. 渲染今日文物内容
+        function renderTodayRelic() {
+            const index = getTodayRelicIndex();
+            const todayRelic = relicList[index];
+            
+            // 填充图片、名称、介绍
+            document.getElementById("relicImg").src = todayRelic.img;
+            document.getElementById("relicImg").alt = todayRelic.name;
+            document.getElementById("relicName").textContent = todayRelic.name;
+            document.getElementById("relicDesc").textContent = todayRelic.desc;
+            
+            // 显示今日日期（格式化）
+            const today = new Date();
+            const dateStr = today.toLocaleDateString("zh-CN", { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            document.getElementById("todayDate").textContent = dateStr;
+        }
+
+        // 4. 按钮点击事件（可根据实际需求修改）
+        document.querySelector('.home-btn').addEventListener('click', function() {
+            // 此处直接回到上一页了
+            window.history.back();
+        });
+
+        document.querySelector('.share-btn').addEventListener('click', function() {
+            // 朋友圈分享逻辑（实际项目中需结合微信JS-SDK实现）
+            alert('已点击分享到朋友圈，可结合微信JS-SDK实现真实分享功能');
+            // 示例：微信朋友圈分享需调用的核心逻辑（需先引入微信JS-SDK）
+            // wx.ready(function() {
+            //     wx.updateTimelineShareData({
+            //         title: document.getElementById('relicName').textContent,
+            //         link: window.location.href,
+            //         imgUrl: document.getElementById('relicImg').src,
+            //         success: function () {
+            //             alert('分享成功');
+            //         }
+            //     });
+            // });
+        });
+
+        // 页面加载时执行渲染
+        window.onload = renderTodayRelic;
+    </script>
 </body>
 </html>
