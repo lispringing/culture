@@ -6,75 +6,86 @@
     <link rel="icon" type="image/png" href="./img/logo.png">
     <title>礼乐齐鲁</title>
     <style>
+        /* 苹果风格基础重置 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Microsoft YaHei", serif;
+            /* 苹果官方字体体系，降级适配 */
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "Microsoft YaHei", sans-serif;
         }
 
         body {
+            /* 苹果浅灰背景基调，保留纹理但降低饱和度 */
             background: url('./img/background.png') no-repeat center center / cover;
-            background-color: #e8dcc5;
+            background-color: #f5f5f7;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 2rem 1rem;
+            /* 全局抗锯齿 */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .header {
             text-align: center;
             margin-bottom: 3rem;
+            opacity: 0.95;
         }
 
         .logo {
             width: 80px;
             height: 80px;
             margin: 0 auto 1rem;
-            background: #6b4f3800;
-            border-radius: 8px;
+            /* 苹果风格轻微圆角+极简阴影 */
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            /* 移除原有文字样式，适配图片 */
             overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            background-color: #ffffff;
         }
-        /* 新增 logo 图片样式，保证图片填满容器且不变形 */
+
         .logo-img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* 保持图片比例，完整显示在容器内 */
+            object-fit: contain;
         }
 
         h1 {
-            font-size: 2.8rem;
-            color: #6b4f38;
-            font-weight: 700;
+            /* 苹果标题字号体系，更轻盈 */
+            font-size: 2.5rem;
+            color: #1d1d1f;
+            font-weight: 600;
             margin-bottom: 0.5rem;
-            letter-spacing: 0.1rem;
+            letter-spacing: -0.02rem;
         }
 
         .subtitle {
             font-size: 1.1rem;
-            color: #8b6f4e;
-            font-weight: 500;
+            color: #86868b;
+            font-weight: 400;
+            /* 苹果副标题字重更轻 */
+            letter-spacing: 0.01rem;
         }
 
         .grid-container {
             display: grid;
-            /* 核心：移动端优先两列，最小宽度适配 */
-            grid-template-columns: repeat(2, 1fr);
-            /* 兜底：屏幕过小时自动调整（可选） */
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.8rem;
             max-width: 800px;
             width: 100%;
+            padding: 0 0.5rem;
         }
 
+        /* 苹果风格卡片：毛玻璃+大圆角+细腻阴影 */
         .card {
-            height: 180px;
-            border-radius: 12px;
+            height: 190px;
+            /* 苹果大圆角特征 */
+            border-radius: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -83,12 +94,20 @@
             text-decoration: none;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-            transition: transform 0.3s ease;
+            /* 苹果细腻阴影 */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            /* 更顺滑的过渡 */
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            /* 毛玻璃核心 */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
+        /* 苹果风格hover：轻微上浮+阴影强化 */
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
         }
 
         .card::before {
@@ -98,80 +117,90 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.1);
+            /* 更通透的遮罩 */
+            background: rgba(0,0,0,0.05);
+            z-index: 0;
         }
 
         .card-icon {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 1rem;
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1.2rem;
             z-index: 1;
+            /* 图标轻微缩放过渡 */
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.08);
         }
 
         .card-title {
-            font-size: 1.3rem;
-            font-weight: 600;
+            font-size: 1.25rem;
+            font-weight: 500;
             z-index: 1;
             text-align: center;
+            letter-spacing: 0.01rem;
         }
 
+        /* 苹果风格低饱和度配色体系 */
         .card:nth-child(1) {
-            background: #b48a4c;
+            background: rgba(180, 138, 76, 0.85);
         }
         .card:nth-child(2) {
-            background: #2d5a4e;
+            background: rgba(45, 90, 78, 0.85);
         }
         .card:nth-child(3) {
-            background: #26bd95;
+            background: rgba(38, 189, 149, 0.85);
         }
         .card:nth-child(4) {
-            background: #8b3a3a;
+            background: rgba(139, 58, 58, 0.85);
         }
         .card:nth-child(5) {
-            background: #be6666;
+            background: rgba(190, 102, 102, 0.85);
         }
         .card:nth-child(6) {
-            background: #617a74;
+            background: rgba(97, 122, 116, 0.85);
         }
 
-        /* 响应式调整：仅在超小屏（如320px以下）微调，保持两列 */
+        /* 苹果响应式适配逻辑：渐进式调整 */
         @media (max-width: 768px) {
             h1 {
-                font-size: 2.2rem;
+                font-size: 2rem;
             }
-            /* 移除原1列规则，改为强制两列 */
             .grid-container {
                 grid-template-columns: repeat(2, 1fr);
-                /* 可选：超小屏缩小间距，提升体验 */
-                gap: 1rem;
+                gap: 1.2rem;
             }
-            /* 可选：移动端缩小卡片高度，适配屏幕 */
             .card {
-                height: 160px;
+                height: 170px;
+                border-radius: 18px;
             }
             .card-title {
-                font-size: 1.1rem;
+                font-size: 1.15rem;
             }
             .card-icon {
-                width: 50px;
-                height: 50px;
+                width: 56px;
+                height: 56px;
             }
         }
 
-        /* 可选：针对320px以下超小屏，进一步优化 */
         @media (max-width: 375px) {
             .grid-container {
-                gap: 0.8rem;
+                gap: 1rem;
             }
             .card {
-                height: 140px;
+                height: 150px;
+                border-radius: 16px;
+            }
+            .header {
+                margin-bottom: 2rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <!-- 替换原文字“鲁”为图片 -->
         <div class="logo">
             <img src="./img/logo.png" alt="礼乐齐鲁logo" class="logo-img">
         </div>
