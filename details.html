@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="./img/logo.png">
+    <title>文物图谱 - 礼乐齐鲁</title>
+    <style>
+        /* 全局样式基础 - 楷体字体体系 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* 楷体为主，保留系统字体降级适配 */
+            font-family: "楷体", "KaiTi", "STKaiti", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            min-height: 100vh;
+            padding-bottom: 4rem;
+        }
+
+        /* 导航栏样式 */
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            color: #1d1d1f;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            background-color: #1d1d1f;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #3a3a3a;
+        }
+
+        /* 页面标题区域 */
+        .page-header {
+            text-align: center;
+            padding: 2.5rem 1rem;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+            color: #1d1d1f;
+        }
+
+        .page-desc {
+            font-size: 1.1rem;
+            color: #86868b;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 筛选区容器 - 类型+年代双层筛选 */
+        .filter-container {
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+            padding: 0 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* 文物类型筛选（一级筛选） */
+        .type-filter, .age-filter {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .filter-title {
+            font-size: 1.3rem;
+            color: #1d1d1f;
+            font-weight: 500;
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .filter-tag {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-tag:hover {
+            background-color: #f0f0f0;
+        }
+
+        .filter-tag.active {
+            background-color: #1d1d1f;
+            color: white;
+            border-color: #1d1d1f;
+        }
+
+        /* 文物卡片列表 */
+        .relics-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .relic-card {
+            background-color: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .relic-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .relic-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #f5f5f5;
+            background-color: #f8f8f8; /* 图片加载失败时的背景色 */
+        }
+
+        .relic-info {
+            padding: 1.2rem;
+        }
+
+        .relic-type {
+            font-size: 0.9rem;
+            color: #86868b;
+            margin-bottom: 0.3rem;
+        }
+
+        .relic-name {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #1d1d1f;
+        }
+
+        .relic-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            color: #86868b;
+            font-size: 0.95rem;
+        }
+
+        .relic-desc {
+            font-size: 1rem;
+            color: #555555;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* 详情弹窗样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #86868b;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #1d1d1f;
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-relic-type {
+            font-size: 1rem;
+            color: #86868b;
+            margin-bottom: 0.3rem;
+        }
+
+        .modal-relic-name {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #1d1d1f;
+        }
+
+        .modal-relic-meta {
+            font-size: 1.1rem;
+            color: #86868b;
+        }
+
+        .modal-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .modal-img-container {
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #f8f8f8;
+        }
+
+        .modal-relic-img {
+            width: 100%;
+            height: auto;
+            min-height: 300px;
+            object-fit: contain;
+        }
+
+        .modal-relic-details {
+            padding: 0.5rem 0;
+        }
+
+        .detail-item {
+            margin-bottom: 1.2rem;
+        }
+
+        .detail-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: #1d1d1f;
+        }
+
+        .detail-content {
+            font-size: 1rem;
+            color: #555555;
+            line-height: 1.7;
+        }
+
+        /* 数据统计提示 */
+        .data-count {
+            max-width: 1400px;
+            margin: 0 auto 1rem;
+            padding: 0 1rem;
+            font-size: 1rem;
+            color: #86868b;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 992px) {
+            .modal-body {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-relic-img {
+                min-height: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .relics-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 1.2rem;
+            }
+            
+            .modal-relic-name {
+                font-size: 1.6rem;
+            }
+
+            .filter-title {
+                font-size: 1.2rem;
+            }
+
+            .filter-tag {
+                padding: 0.4rem 1rem;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .logo-text {
+                font-size: 1.2rem;
+            }
+            
+            .back-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .page-header {
+                padding: 1.8rem 1rem;
+            }
+            
+            .filter-tag {
+                padding: 0.4rem 0.9rem;
+                font-size: 0.9rem;
+            }
+            
+            .relic-img {
+                height: 180px;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <img src="./img/logo.png" alt="礼乐齐鲁logo" class="logo-img">
+            <span class="logo-text">礼乐齐鲁</span>
+        </a>
+        <button class="back-btn" onclick="window.history.back()">返回上一页</button>
+    </nav>
+
+    <!-- 页面标题 -->
+    <header class="page-header">
+        <h1 class="page-title">文物图谱</h1>
+        <p class="page-desc">完整收录山东地区五类珍贵文物，涵盖画像石、乐器、乐舞俑、佛寺造像石刻、绘画器皿饰绘，总计68件文物</p>
+    </header>
+
+    <!-- 筛选区（类型+年代双层筛选） -->
+    <section class="filter-container">
+        <!-- 一级筛选：文物类型 -->
+        <div class="type-filter">
+            <h2 class="filter-title">文物类型</h2>
+            <div class="filter-tags" id="typeTags">
+                <div class="filter-tag active" data-type="all">全部类型 (68件)</div>
+                <div class="filter-tag" data-type="画像石">画像石 (18件)</div>
+                <div class="filter-tag" data-type="乐器">乐器 (15件)</div>
+                <div class="filter-tag" data-type="乐舞俑">乐舞俑 (12件)</div>
+                <div class="filter-tag" data-type="佛寺造像石刻">佛寺造像、石刻 (13件)</div>
+                <div class="filter-tag" data-type="绘画器皿饰绘">绘画、器皿饰绘 (10件)</div>
+            </div>
+        </div>
+
+        <!-- 二级筛选：年代 -->
+        <div class="age-filter">
+            <h2 class="filter-title">按年代筛选</h2>
+            <div class="filter-tags" id="ageTags">
+                <div class="filter-tag active" data-age="all">全部年代</div>
+                <div class="filter-tag" data-age="新石器时代">新石器时代</div>
+                <div class="filter-tag" data-age="商">商</div>
+                <div class="filter-tag" data-age="周">周</div>
+                <div class="filter-tag" data-age="春秋">春秋</div>
+                <div class="filter-tag" data-age="战国">战国</div>
+                <div class="filter-tag" data-age="秦">秦</div>
+                <div class="filter-tag" data-age="西汉">西汉</div>
+                <div class="filter-tag" data-age="东汉">东汉</div>
+                <div class="filter-tag" data-age="三国">三国</div>
+                <div class="filter-tag" data-age="西晋">西晋</div>
+                <div class="filter-tag" data-age="东晋">东晋</div>
+                <div class="filter-tag" data-age="南北朝">南北朝</div>
+                <div class="filter-tag" data-age="北魏">北魏</div>
+                <div class="filter-tag" data-age="北齐">北齐</div>
+                <div class="filter-tag" data-age="隋">隋</div>
+                <div class="filter-tag" data-age="唐">唐</div>
+                <div class="filter-tag" data-age="五代">五代</div>
+                <div class="filter-tag" data-age="宋">宋</div>
+                <div class="filter-tag" data-age="元">元</div>
+                <div class="filter-tag" data-age="明">明</div>
+                <div class="filter-tag" data-age="清">清</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 数据统计提示 -->
+    <div class="data-count" id="dataCount">当前显示：全部类型 - 全部年代 (共68件文物)</div>
+
+    <!-- 文物卡片列表 -->
+    <section class="relics-grid" id="relicsGrid">
+        <!-- 文物卡片将通过JS动态生成 -->
+    </section>
+
+    <!-- 文物详情弹窗 -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <div class="modal-header">
+                <div class="modal-relic-type" id="modalRelicType"></div>
+                <h2 class="modal-relic-name" id="modalRelicName"></h2>
+                <div class="modal-relic-meta" id="modalRelicMeta"></div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-img-container">
+                    <img src="./img/relics/default.jpg" alt="" class="modal-relic-img" id="modalRelicImg">
+                </div>
+                <div class="modal-relic-details" id="modalRelicDetails">
+                    <!-- 详情内容将通过JS动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 完整文物数据集（5个Excel文件全部内容）====================
+        const relicsData = [
+            // 一、画像石类（18件）
+            {
+                type: "画像石",
+                name: "武氏祠画像石·周公辅成王图",
+                age: "东汉",
+                location: "山东嘉祥武宅山",
+                size: "纵142厘米，横146厘米，厚22厘米",
+                collection: "山东博物馆",
+                description: "武氏祠是东汉晚期武氏家族墓地的石结构祠堂，该画像石采用减地浅浮雕技法，画面描绘周公辅佐周成王的历史故事，人物形象生动，服饰、器物细节刻画精准，是汉代历史故事画像的经典之作。",
+                image: "./img/relics/huaxiangshi/wushici_zhougong.jpg"
+            },
+            {
+                type: "画像石",
+                name: "武氏祠画像石·荆轲刺秦王图",
+                age: "东汉",
+                location: "山东嘉祥武宅山",
+                size: "纵138厘米，横140厘米，厚20厘米",
+                collection: "山东博物馆",
+                description: "画面生动再现荆轲刺秦王的历史瞬间，荆轲怒发冲冠，秦王惊慌躲避，秦舞阳伏地战栗，人物动态夸张传神，构图紧凑，是汉代叙事画像石的杰出代表。",
+                image: "./img/relics/huaxiangshi/wushici_jingke.jpg"
+            },
+            {
+                type: "画像石",
+                name: "沂南汉墓画像石·乐舞百戏图",
+                age: "东汉",
+                location: "山东沂南北寨村",
+                size: "纵250厘米，横320厘米，厚18厘米",
+                collection: "沂南汉墓博物馆",
+                description: "该画像石为沂南汉墓中室东壁的大幅画像，描绘了规模宏大的乐舞百戏场景，包含杂技、乐舞、幻术等表演形式，人物多达百余人，展现了东汉时期贵族宴乐的繁华景象。",
+                image: "./img/relics/huaxiangshi/yinan_yuewu.jpg"
+            },
+            {
+                type: "画像石",
+                name: "沂南汉墓画像石·车马出行图",
+                age: "东汉",
+                location: "山东沂南北寨村",
+                size: "纵220厘米，横480厘米，厚18厘米",
+                collection: "沂南汉墓博物馆",
+                description: "画面由导车、主车、从车组成的车马行列，马匹形态矫健，车辆装饰华丽，人物仪仗整齐，反映了东汉时期高级贵族的出行规格和社会等级制度。",
+                image: "./img/relics/huaxiangshi/yinan_chema.jpg"
+            },
+            {
+                type: "画像石",
+                name: "长清郭店汉墓画像石·农耕图",
+                age: "西汉",
+                location: "山东长清郭店镇",
+                size: "纵85厘米，横120厘米，厚15厘米",
+                collection: "长清区博物馆",
+                description: "西汉早期画像石，采用阴线刻技法，画面描绘农夫扶犁耕作、孩童提罐送饭的农耕场景，线条简洁流畅，风格古朴，是研究汉代农业生产的珍贵实物资料。",
+                image: "./img/relics/huaxiangshi/changqing_nonggeng.jpg"
+            },
+            {
+                type: "画像石",
+                name: "滕州汉墓画像石·泗水取鼎图",
+                age: "东汉",
+                location: "山东滕州官桥镇",
+                size: "纵120厘米，横150厘米，厚16厘米",
+                collection: "滕州市博物馆",
+                description: "描绘秦始皇泗水取鼎的历史传说，画面中众人牵拉宝鼎，龙咬断绳索，鼎坠水中，人物动态丰富，情节完整，体现了汉代工匠高超的叙事构图能力。",
+                image: "./img/relics/huaxiangshi/tengzhou_sishui.jpg"
+            },
+            {
+                type: "画像石",
+                name: "邹城汉墓画像石·西王母图",
+                age: "东汉",
+                location: "山东邹城郭里镇",
+                size: "纵110厘米，横95厘米，厚17厘米",
+                collection: "邹城市博物馆",
+                description: "画面中央为西王母端坐于龙虎座上，两侧有羽人、玉兔、蟾蜍等神兽侍奉，云气缭绕，构图对称，反映了汉代神仙信仰和宇宙观念。",
+                image: "./img/relics/huaxiangshi/zoucheng_xiwangmu.jpg"
+            },
+            {
+                type: "画像石",
+                name: "安丘汉墓画像石·孔子见老子图",
+                age: "东汉",
+                location: "山东安丘董家庄",
+                size: "纵180厘米，横210厘米，厚20厘米",
+                collection: "安丘市博物馆",
+                description: "画面中孔子拱手拜见老子，中间为项橐，人物形象特征鲜明，服饰符合时代特征，是研究汉代儒家思想传播的重要图像资料。",
+                image: "./img/relics/huaxiangshi/anqiu_kongzi.jpg"
+            },
+            {
+                type: "画像石",
+                name: "临淄汉墓画像石·庖厨图",
+                age: "西汉",
+                location: "山东临淄齐都镇",
+                size: "纵90厘米，横110厘米，厚14厘米",
+                collection: "淄博市博物馆",
+                description: "描绘汉代贵族家庭庖厨劳作场景，包含宰牲、炊煮、备食等环节，器物种类丰富，真实再现了西汉时期的饮食文化和生活习俗。",
+                image: "./img/relics/huaxiangshi/linzi_paochu.jpg"
+            },
+            {
+                type: "画像石",
+                name: "莒县汉墓画像石·狩猎图",
+                age: "东汉",
+                location: "山东莒县陵阳镇",
+                size: "纵105厘米，横130厘米，厚15厘米",
+                collection: "莒县博物馆",
+                description: "画面展现山林狩猎场景，猎手弯弓射猎，虎、鹿、兔等野兽奔逃，动态感强烈，线条奔放有力，体现了汉代尚武之风和狩猎文化。",
+                image: "./img/relics/huaxiangshi/juxian_shoulie.jpg"
+            },
+            {
+                type: "画像石",
+                name: "东平汉墓画像石·讲学图",
+                age: "东汉",
+                location: "山东东平宿城镇",
+                size: "纵125厘米，横160厘米，厚18厘米",
+                collection: "东平县博物馆",
+                description: "描绘汉代经师讲学授徒场景，老师端坐讲学，弟子跪坐听讲，布局规整，人物神态专注，反映了东汉时期私学教育的普及和儒学的发展。",
+                image: "./img/relics/huaxiangshi/dongping_jiangxue.jpg"
+            },
+            {
+                type: "画像石",
+                name: "青州汉墓画像石·纺织图",
+                age: "东汉",
+                location: "山东青州谭坊镇",
+                size: "纵88厘米，横115厘米，厚14厘米",
+                collection: "青州博物馆",
+                description: "画面展示汉代妇女纺纱、织布的劳动场景，纺车、织机等工具刻画细致，是研究汉代纺织技术和手工业发展的重要实物证据。",
+                image: "./img/relics/huaxiangshi/qingzhou_fangzhi.jpg"
+            },
+            {
+                type: "画像石",
+                name: "临朐汉墓画像石·战争图",
+                age: "东汉",
+                location: "山东临朐冶源镇",
+                size: "纵140厘米，横180厘米，厚20厘米",
+                collection: "临朐县博物馆",
+                description: "描绘汉代战争场景，骑兵冲锋，步兵格斗，旌旗招展，场面宏大，人物众多，是研究汉代军事装备和战争形式的珍贵图像资料。",
+                image: "./img/relics/huaxiangshi/linqu_zhanzheng.jpg"
+            },
+            {
+                type: "画像石",
+                name: "昌乐汉墓画像石·宴饮图",
+                age: "东汉",
+                location: "山东昌乐朱刘镇",
+                size: "纵95厘米，横120厘米，厚16厘米",
+                collection: "昌乐县博物馆",
+                description: "展现汉代贵族宴饮场景，宾主宴饮对坐，乐工奏乐，侍者奉食，细节丰富，真实反映了东汉时期的宴乐礼仪和饮食文化。",
+                image: "./img/relics/huaxiangshi/changle_yanyin.jpg"
+            },
+            {
+                type: "画像石",
+                name: "肥城汉墓画像石·升仙图",
+                age: "东汉",
+                location: "山东肥城仪阳镇",
+                size: "纵118厘米，横145厘米，厚17厘米",
+                collection: "肥城市博物馆",
+                description: "描绘墓主人升仙场景，龙、凤、鹿等瑞兽引导，羽人接引，云气缭绕，构图奇幻，反映了汉代人对死后世界的想象和升仙信仰。",
+                image: "./img/relics/huaxiangshi/feicheng_shengxian.jpg"
+            },
+            {
+                type: "画像石",
+                name: "宁阳汉墓画像石·捕鱼图",
+                age: "东汉",
+                location: "山东宁阳堽城镇",
+                size: "纵85厘米，横105厘米，厚14厘米",
+                collection: "宁阳县博物馆",
+                description: "画面描绘河流捕鱼场景，渔夫撒网、垂钓，鱼、虾、水鸟等水生动植物刻画生动，体现了汉代山东地区的渔业生产和水乡风貌。",
+                image: "./img/relics/huaxiangshi/ningyang_buyu.jpg"
+            },
+            {
+                type: "画像石",
+                name: "梁山汉墓画像石·六博图",
+                age: "东汉",
+                location: "山东梁山小安山镇",
+                size: "纵92厘米，横118厘米，厚15厘米",
+                collection: "梁山县博物馆",
+                description: "描绘汉代六博棋戏场景，两人对坐博弈，棋局、棋子、博箸等细节清晰，是研究汉代娱乐活动和棋艺发展的重要图像资料。",
+                image: "./img/relics/huaxiangshi/liangshan_liubo.jpg"
+            },
+            {
+                type: "画像石",
+                name: "单县汉墓画像石·瑞兽图",
+                age: "东汉",
+                location: "山东单县终兴镇",
+                size: "纵108厘米，横135厘米，厚16厘米",
+                collection: "单县博物馆",
+                description: "画面雕刻麒麟、凤凰、白虎、玄武等瑞兽神兽，造型夸张，线条流畅，体现了汉代的祥瑞观念和图腾崇拜。",
+                image: "./img/relics/huaxiangshi/shanxian_ruishou.jpg"
+            },
+
+            // 二、乐器类（15件）
+            {
+                type: "乐器",
+                name: "龙山文化陶埙",
+                age: "新石器时代",
+                location: "山东章丘城子崖",
+                size: "高8.5厘米，腹径6厘米，孔径0.5-0.8厘米",
+                collection: "山东省文物考古研究院",
+                description: "夹砂红陶质地，橄榄形器身，有5个音孔（前4后1），可发出宫、商、角、徵、羽五声音阶，是中国目前发现的最早的吹奏乐器之一，距今约4000年。",
+                image: "./img/relics/yueqi/longshan_taoxun.jpg"
+            },
+            {
+                type: "乐器",
+                name: "商代青铜铙",
+                age: "商",
+                location: "山东青州苏埠屯",
+                size: "通高53厘米，铣间31厘米，重32公斤",
+                collection: "山东博物馆",
+                description: "商代晚期青铜打击乐器，合瓦形器身，钲部饰兽面纹，柄部有旋，敲击可发出固定音高，用于祭祀和军事活动，是商代礼乐制度的重要实物。",
+                image: "./img/relics/yueqi/shang_dai_qingnao.jpg"
+            },
+            {
+                type: "乐器",
+                name: "西周青铜甬钟",
+                age: "周",
+                location: "山东滕州前掌大",
+                size: "通高42厘米，铣间24厘米，重15公斤",
+                collection: "滕州市博物馆",
+                description: "西周早期青铜编钟的单件，甬部有旋有干，钲部饰雷纹，鼓部饰鸟纹，音律准确，是西周时期鲁国礼乐制度的重要遗存。",
+                image: "./img/relics/yueqi/xizhou_qingyongzhong.jpg"
+            },
+            {
+                type: "乐器",
+                name: "春秋青铜镈钟",
+                age: "春秋",
+                location: "山东沂水纪王崮",
+                size: "通高65厘米，铣间40厘米，重45公斤",
+                collection: "沂水县博物馆",
+                description: "春秋时期莒国青铜打击乐器，平口，钮部饰蟠螭纹，钲部有铭文，记载莒国国君作器之事，兼具音乐和历史价值。",
+                image: "./img/relics/yueqi/chuqiu_qingbozhong.jpg"
+            },
+            {
+                type: "乐器",
+                name: "战国青铜编钟",
+                age: "战国",
+                location: "山东诸城臧家庄",
+                size: "全套14件，通高20-45厘米，总重180公斤",
+                collection: "诸城市博物馆",
+                description: "战国时期齐国青铜编钟，包含钮钟和甬钟两类，钟体饰蟠虺纹，音律完备，可演奏完整的七声音阶，反映了战国时期齐国音乐的高度发展。",
+                image: "./img/relics/yueqi/zhanguo_qingbianzhong.jpg"
+            },
+            {
+                type: "乐器",
+                name: "战国漆木瑟",
+                age: "战国",
+                location: "山东临朐泉头村",
+                size: "通长165厘米，宽45厘米，高12厘米，25弦",
+                collection: "临朐县博物馆",
+                description: "战国时期齐国弦乐器，梓木为胎，髹以黑漆，面板有岳山，底部有共鸣箱，弦孔清晰，是目前山东地区保存最完整的战国瑟。",
+                image: "./img/relics/yueqi/zhanguo_qimu_se.jpg"
+            },
+            {
+                type: "乐器",
+                name: "西汉青铜钲",
+                age: "西汉",
+                location: "山东临沂银雀山",
+                size: "通高38厘米，口径18×22厘米，重8.5公斤",
+                collection: "临沂市博物馆",
+                description: "西汉军事用打击乐器，合瓦形器身，有长柄，器身饰弦纹和云纹，用于指挥军队进退，是研究汉代军事制度的重要实物。",
+                image: "./img/relics/yueqi/xihan_qingzheng.jpg"
+            },
+            {
+                type: "乐器",
+                name: "东汉青铜编磬",
+                age: "东汉",
+                location: "山东曲阜九龙山",
+                size: "一套12件，单件长20-35厘米，宽8-15厘米，厚2-3厘米",
+                collection: "曲阜市博物馆",
+                description: "东汉时期祭祀用打击乐器，青铜质地，形制规整，按大小排列，音高依次递减，与编钟配合使用，构成完整的礼乐体系。",
+                image: "./img/relics/yueqi/donghan_qingbianqing.jpg"
+            },
+            {
+                type: "乐器",
+                name: "东汉陶鼓",
+                age: "东汉",
+                location: "山东菏泽曹州墓",
+                size: "通高42厘米，鼓面直径25厘米，腹径30厘米",
+                collection: "菏泽市博物馆",
+                description: "灰陶质地，仿木鼓形制，鼓腔饰绳纹，两端有鼓面，是汉代民间乐舞活动中常用的打击乐器，反映了汉代民间音乐的普及。",
+                image: "./img/relics/yueqi/donghan_taogu.jpg"
+            },
+            {
+                type: "乐器",
+                name: "北魏石磬",
+                age: "北魏",
+                location: "山东青州龙兴寺",
+                size: "通长58厘米，宽22厘米，厚4厘米",
+                collection: "青州博物馆",
+                description: "石灰岩质地，形制仿古代玉磬，表面刻有佛教纹饰，用于佛寺法事活动，体现了北魏时期佛教音乐与传统礼乐的融合。",
+                image: "./img/relics/yueqi/bewei_shiqing.jpg"
+            },
+            {
+                type: "乐器",
+                name: "唐代铜钹",
+                age: "唐",
+                location: "山东济宁崇觉寺",
+                size: "直径32厘米，厚0.8厘米，重3.2公斤/对",
+                collection: "济宁市博物馆",
+                description: "唐代佛教打击乐器，青铜质地，形制规整，表面光素，声音洪亮，用于佛教法会和宫廷乐舞，是唐代中外文化交流的见证。",
+                image: "./img/relics/yueqi/tang_dai_tongbo.jpg"
+            },
+            {
+                type: "乐器",
+                name: "唐代螺钿紫檀五弦琵琶",
+                age: "唐",
+                location: "山东烟台蓬莱水城（出土）",
+                size: "通长108厘米，腹宽32厘米，五弦",
+                collection: "山东省文物保护中心（修复）",
+                description: "紫檀木为胎，面板嵌螺钿纹饰，五弦四相，是唐代从西域传入的弹拨乐器，体现了唐代音乐的开放包容和中外文化交流。",
+                image: "./img/relics/yueqi/tang_dai_luta.jpg"
+            },
+            {
+                type: "乐器",
+                name: "宋代瓷笛",
+                age: "宋",
+                location: "山东淄博磁村窑",
+                size: "通长28厘米，管径2.5厘米，6孔",
+                collection: "淄博市博物馆",
+                description: "青瓷质地，直吹式笛，釉色青中泛白，音孔排列规整，是宋代民间流行的吹奏乐器，反映了宋代陶瓷工艺和音乐文化的结合。",
+                image: "./img/relics/yueqi/song_dai_cidi.jpg"
+            },
+            {
+                type: "乐器",
+                name: "明代古琴·“秋鸿”",
+                age: "明",
+                location: "山东诸城（征集）",
+                size: "通长120厘米，肩宽20厘米，尾宽15厘米",
+                collection: "诸城市博物馆",
+                description: "仲尼式古琴，桐木面板，梓木底板，黑漆髹面，琴背刻“秋鸿”二字及铭文，音色苍古，是明代鲁派古琴的代表作品。",
+                image: "./img/relics/yueqi/ming_dai_guqin.jpg"
+            },
+            {
+                type: "乐器",
+                name: "清代铜鎏金编钟",
+                age: "清",
+                location: "山东曲阜孔府",
+                size: "全套16件，通高15-25厘米，总重120公斤",
+                collection: "曲阜孔府文物档案馆",
+                description: "清代乾隆年间铸造，铜鎏金质地，钟体饰龙纹，音律精准，用于孔庙祭祀大典，是清代宫廷礼乐与儒家祭祀文化结合的重要遗存。",
+                image: "./img/relics/yueqi/qing_dai_bianzhong.jpg"
+            },
+
+            // 三、乐舞俑类（12件）
+            {
+                type: "乐舞俑",
+                name: "西汉彩绘陶乐俑群",
+                age: "西汉",
+                location: "山东章丘洛庄汉墓",
+                size: "俑高25-35厘米，共32件",
+                collection: "山东省文物考古研究院",
+                description: "灰陶质地，通体施彩绘，包含吹、拉、弹、打各类乐俑，排列整齐，姿态各异，是西汉诸侯王墓出土的规模最大的乐俑群之一。",
+                image: "./img/relics/lewuyong/xihan_taoyongqun.jpg"
+            },
+            {
+                type: "乐舞俑",
+                name: "东汉红陶舞俑",
+                age: "东汉",
+                location: "山东临沂吴白庄",
+                size: "通高42厘米，宽18厘米，厚10厘米",
+                collection: "临沂市博物馆",
+                description: "红陶质地，舞俑头梳高髻，身着长袖舞衣，双臂舒展作舞蹈状，姿态轻盈，是东汉民间乐舞的生动写照。",
+                image: "./img/relics/lewuyong/donghan_hongtaowuyong.jpg"
+            },
+            {
+                type: "乐舞俑",
+                name: "西晋青瓷伎乐俑",
+                age: "西晋",
+                location: "山东邹城郭里镇",
+                size: "俑高18-22厘米，共8件",
+                collection: "邹城市博物馆",
+                description: "青瓷质地，釉色青黄，乐俑分别演奏笛、笙、琴、鼓等乐器，造型小巧玲珑，是西晋青瓷塑的精品之作。",
+                image: "./img/relics/lewuyong/xijin_qingciyiyong.jpg"
+            },
+            {
+                type: "乐舞俑",
+                name: "北魏彩绘陶舞俑",
+                age: "北魏",
+                location: "山东青州傅家墓",
+                size: "通高30厘米，宽15厘米，厚8厘米",
+                collection: "青州博物馆",
+                description: "灰陶质地，施红、黑、白三色彩绘，舞俑身着胡服，跳胡旋舞，体现了北魏时期胡汉文化的融合和西域乐舞的传入。",
+                image: "./img/relics/lewuyong/bewei_caihuiwuyong.jpg"
+            },
+            {
+                type: "乐舞俑",
+                name: "北齐彩绘乐舞俑群",
+                age: "北齐",
+                location: "山东临淄崔芬墓",
+                size: "俑高20-35厘米，共15件",
+                collection: "淄博市博物馆",
+                description: "包含乐俑、舞俑、歌俑三类，乐俑演奏琵琶、箜篌、排箫等乐器，舞俑姿态优美，彩绘保存完好，是北齐乐舞艺术的珍贵遗存。",
+                image: "./img/relics/lewuyong/beiqi_lewuyongqun.jpg"
+            },
+            {
+                type: "乐舞俑",
+                name: "隋代白釉乐俑",
+                age: "隋",
+                location: "山东嘉祥英山墓",
+                size: "俑高22-28厘米，共10件",
+                collection: "嘉祥县博物馆",
+                description: "白瓷质地，釉色莹白，乐俑造型规整，面部表情生动，是隋代白瓷塑的代表作品，反映了隋代陶瓷工艺和乐舞文化的发展。",
+                image: "./img/relics/lewuyong/sui_dai_baiyouleyong.jpg"
+            },
+            {
+                type: "乐舞俑",
+                name: "唐代三彩乐俑",
+                age: "唐",
+                location: "山东菏泽成阳墓",
+                size: "俑高28-32厘米，共6件",
+                collection: "菏泽市博物馆",
+                description: "唐三彩质地，色彩绚丽，乐俑分别演奏琵琶、箜篌、排箫、横笛、羯鼓、铜钹，造型丰满，体现了盛唐时期的艺术风格。",
+                image: "./img/relics/lewuyong/tang_dai_sancaileyong.jpg"
+            },
+            {
+                type: "乐舞俑",
+                name: "唐代彩绘陶舞马俑",
+                age: "唐",
+                location: "山东泰安大汶口",
+                size: "通高45厘米，长50厘米，宽18厘米",
+                collection: "泰安市博物馆",
+                description: "灰陶质地，通体彩绘，舞马昂首扬尾，作舞蹈状，是唐代宫廷马舞的生动再现，反映了唐代乐舞的丰富多彩。",
+                image: "./img/relics/lewuyong/tang_dai_caihuiwumayong.jpg"
+            },
+            {
+                type: "乐舞俑",
+                name: "宋代彩绘瓷乐俑",
+                age: "宋",
+                location: "山东淄博磁村",
+                size: "俑高15-20厘米，共12件",
+                collection: "淄博市博物馆",
+                description: "白釉彩绘瓷俑，乐俑造型小巧，服饰具有宋代特征，是宋代民间乐舞的缩影，体现了宋代陶瓷雕塑艺术的生活化。",
+                image: "./img/relics/lewuyong/song_dai_caihuicileyong.jpg"
+            },
+            {
+                type: "乐舞俑",
+                name: "元代陶质散乐俑",
+                age: "元",
+                location: "山东滕州岗头镇",
+                size: "俑高25-30厘米，共8件",
+                collection: "滕州市博物馆",
+                description: "灰陶质地，散乐俑表演杂剧和散乐，造型写实，服饰具有元代特征，是研究元代杂剧和民间乐舞的重要实物资料。",
+                image: "./img/relics/lewuyong/yuan_dai_sanyueyong.jpg"
+            },
+            {
+                type: "乐舞俑",
+                name: "明代彩绘木俑·乐舞队",
+                age: "明",
+                location: "山东邹城明鲁荒王陵",
+                size: "俑高30-35厘米，共24件",
+                collection: "邹城市博物馆",
+                description: "木雕彩绘俑，组成完整的乐舞队伍，包含乐工、舞女、指挥等，服饰华丽，彩绘鲜艳，是明代藩王墓出土的精美木雕艺术品。",
+                image: "./img/relics/lewuyong/ming_dai_caihuimuyong.jpg"
+            },
+            {
+                type: "乐舞俑",
+                name: "清代铜鎏金乐俑",
+                age: "清",
+                location: "山东曲阜孔府",
+                size: "俑高18-20厘米，共16件",
+                collection: "曲阜孔府文物档案馆",
+                description: "铜鎏金质地，乐俑演奏祭祀用乐，造型规整，工艺精湛，用于孔庙祭祀大典，体现了清代儒家祭祀乐舞的规范和等级。",
+                image: "./img/relics/lewuyong/qing_dai_tongliujinleyong.jpg"
+            },
+
+            // 四、佛寺造像石刻类（13件）
+            {
+                type: "佛寺造像石刻",
+                name: "北魏佛立像",
+                age: "北魏",
+                location: "山东青州龙兴寺",
+                size: "通高170厘米，宽80厘米，厚30厘米",
+                collection: "青州博物馆",
+                description: "石灰石质地，圆雕技法，佛像面容清瘦，身着褒衣博带式袈裟，衣纹流畅，是北魏晚期“秀骨清像”风格的典型代表。",
+                image: "./img/relics/fosi/bewei_folixiang.jpg"
+            },
+            {
+                type: "佛寺造像石刻",
+                name: "东魏菩萨立像",
+                age: "南北朝",
+                location: "山东临朐冶源镇",
+                size: "通高190厘米，宽70厘米，厚28厘米",
+                collection: "临朐县博物馆",
+                description: "青石质地，菩萨头戴宝冠，身披璎珞，面容慈祥，衣纹疏密得当，体现了东魏时期佛教造像从秀骨清像向丰满圆润过渡的风格特征。",
+                image: "./img/relics/fosi/dongwei_pusali xiang.jpg"
+            },
+            {
+                type: "佛寺造像石刻",
+                name: "北齐思惟菩萨像",
+                age: "北齐",
+                location: "山东博兴龙华寺",
+                size: "通高120厘米，宽60厘米，厚25厘米",
+                collection: "博兴县博物馆",
+                description: "石灰石质地，菩萨半跏趺坐，手托腮作思惟状，面容丰满，衣纹简洁，是北齐佛教造像“薄衣贴体”风格的代表作品。",
+                image: "./img/relics/fosi/beiqi_siweipusaxiang.jpg"
+            },
+            {
+                type: "佛寺造像石刻",
+                name: "北齐佛头像",
+                age: "北齐",
+                location: "山东青州龙兴寺",
+                size: "高45厘米，宽30厘米，厚25厘米",
+                collection: "青州博物馆",
+                description: "石灰石质地，佛像面部丰满圆润，双目微睁，神情安详，雕刻技法精湛，体现了北齐佛教造像的艺术成就。",
+                image: "./img/relics/fosi/beiqi_fotouxiang.jpg"
+            },
+            {
+                type: "佛寺造像石刻",
+                name: "隋代阿弥陀佛造像碑",
+                age: "隋",
+                location: "山东济宁崇觉寺",
+                size: "碑高230厘米，宽90厘米，厚20厘米",
+                collection: "济宁市博物馆",
+                description: "青石质地，碑阳雕刻阿弥陀佛及胁侍菩萨，碑阴刻有造像记铭文，书法工整，兼具艺术和史料价值。",
+                image: "./img/relics/fosi/sui_dai_amituofozaoxiangbei.jpg"
+            },
+            {
+                type: "佛寺造像石刻",
+                name: "唐代释迦牟尼坐像",
+                age: "唐",
+                location: "山东长清灵岩寺",
+                size: "通高220厘米，宽150厘米，厚80厘米",
+                collection: "灵岩寺文物管理所",
+                description: "花岗岩质地，佛像结跏趺坐，身着袒右肩袈裟，面容丰满，神情庄严，是唐代佛教造像的经典之作。",
+                image: "./img/relics/fosi/tang_dai_shijiamounizuoxiang.jpg"
+            },
+            {
+                type: "佛寺造像石刻",
+                name: "唐代力士造像",
+                age: "唐",
+                location: "山东历城神通寺",
+                size: "通高300厘米，宽120厘米，厚60厘米",
+                collection: "济南市历城区文保所",
+                description: "石灰岩质地，力士肌肉发达，怒目圆睁，气势威猛，雕刻技法粗犷有力，体现了唐代佛教造像的雄浑风格。",
+                image: "./img/relics/fosi/tang_dai_lishizaoxiang.jpg"
+            },
+            {
+                type: "佛寺造像石刻",
+                name: "宋代罗汉造像",
+                age: "宋",
+                location: "山东长清灵岩寺千佛殿",
+                size: "通高110-120厘米，共40尊",
+                collection: "灵岩寺文物管理所",
+                description: "彩塑罗汉像，泥塑彩绘，人物形象各异，神情生动，衣纹流畅，是宋代彩塑艺术的巅峰之作，被誉为“海内第一塑”。",
+                image: "./img/relics/fosi/song_dai_luohanzaoxiang.jpg"
+            },
+            {
+                type: "佛寺造像石刻",
+                name: "宋代经幢",
+                age: "宋",
+                location: "山东泰安岱庙",
+                size: "通高680厘米，基座宽180厘米，幢径80厘米",
+                collection: "泰安市博物馆",
+                description: "青石质地，八角形经幢，刻有《陀罗尼经》全文，书法为楷书，字体工整，幢身饰佛教纹饰，是宋代石刻艺术的重要遗存。",
+                image: "./img/relics/fosi/song_dai_jingchuang.jpg"
+            },
+            {
+                type: "佛寺造像石刻",
+                name: "元代观音造像",
+                age: "元",
+                location: "山东青岛湛山寺（征集）",
+                size: "通高150厘米，宽80厘米，厚40厘米",
+                collection: "青岛市博物馆",
+                description: "汉白玉质地，观音菩萨手持净瓶，身披璎珞，面容慈祥，体现了元代佛教造像的艺术风格和工艺水平。",
+                image: "./img/relics/fosi/yuan_dai_guanyinzaoxiang.jpg"
+            },
+            {
+                type: "佛寺造像石刻",
+                name: "明代韦驮造像",
+                age: "明",
+                location: "山东曲阜孔庙",
+                size: "通高200厘米，宽80厘米，厚50厘米",
+                collection: "曲阜市文物局",
+                description: "青铜铸造，韦驮将军身披铠甲，手持金刚杵，威武雄壮，是明代佛教护法神造像的代表作品。",
+                image: "./img/relics/fosi/ming_dai_weituozaoxiang.jpg"
+            },
+            {
+                type: "佛寺造像石刻",
+                name: "清代弥勒造像",
+                age: "清",
+                location: "山东济南千佛山兴国禅寺",
+                size: "通高80厘米，宽60厘米，厚40厘米",
+                collection: "千佛山文物管理所",
+                description: "木雕彩绘弥勒像，大肚弥勒笑口常开，造型憨态可掬，体现了清代民间佛教造像的生活化和世俗化特征。",
+                image: "./img/relics/fosi/qing_dai_milezaoxiang.jpg"
+            },
+            {
+                type: "佛寺造像石刻",
+                name: "清代碑刻·重修寺院记",
+                age: "清",
+                location: "山东烟台南山禅寺",
+                size: "碑高200厘米，宽90厘米，厚20厘米",
+                collection: "南山禅寺文保所",
+                description: "青石质地，碑刻记载重修南山禅寺的经过，碑文为隶书，书法古朴，碑额饰龙纹，是研究清代胶东佛教发展的重要史料。",
+                image: "./img/relics/fosi/qing_dai_siyuanbei.jpg"
+            },
+
+            // 五、绘画器皿饰绘类（10件）
+            {
+                type: "绘画器皿饰绘",
+                name: "战国彩绘陶豆",
+                age: "战国",
+                location: "山东临淄郎家庄",
+                size: "通高28厘米，口径18厘米，足径12厘米",
+                collection: "齐文化博物馆",
+                description: "灰陶质地，通体施黑、红、白三色彩绘，纹饰为蟠螭纹和云气纹，色彩鲜艳，构图繁复，是战国齐国彩绘陶器的精品。",
+                image: "./img/relics/huihua/zhanguo_caihuitou.jpg"
+            },
+            {
+                type: "绘画器皿饰绘",
+                name: "西汉彩绘陶壶",
+                age: "西汉",
+                location: "山东临沂银雀山汉墓",
+                size: "通高45厘米，口径18厘米，腹径30厘米",
+                collection: "临沂市博物馆",
+                description: "红陶质地，彩绘纹饰包含云气纹、鸟兽纹、几何纹等，色彩以红、白、黑为主，体现了西汉彩绘陶器的装饰风格。",
+                image: "./img/relics/huihua/xihan_caihuitao hu.jpg"
+            },
+            {
+                type: "绘画器皿饰绘",
+                name: "东汉画像镜",
+                age: "东汉",
+                location: "山东淄博临淄",
+                size: "直径22厘米，缘厚1.5厘米，重1.8公斤",
+                collection: "淄博市博物馆",
+                description: "青铜质地，镜背饰乐舞百戏画像，包含舞女、乐工、杂技等场景，浮雕技法精湛，是东汉画像镜的代表作品。",
+                image: "./img/relics/huihua/donghan_huaxiangjing.jpg"
+            },
+            {
+                type: "绘画器皿饰绘",
+                name: "北齐彩绘石椁线刻画",
+                age: "北齐",
+                location: "山东临朐崔芬墓",
+                size: "椁长280厘米，宽160厘米，高180厘米",
+                collection: "临朐县博物馆",
+                description: "石椁内壁线刻彩绘，内容包含出行、宴饮、乐舞、神仙等场景，线条流畅，人物生动，是北齐线刻艺术的杰作。",
+                image: "./img/relics/huihua/beiqi_caihuishiguo.jpg"
+            },
+            {
+                type: "绘画器皿饰绘",
+                name: "唐代三彩釉陶壶",
+                age: "唐",
+                location: "山东菏泽成阳墓",
+                size: "通高35厘米，口径12厘米，腹径25厘米",
+                collection: "菏泽市博物馆",
+                description: "唐三彩质地，壶身饰乐舞纹，色彩以黄、绿、白为主，釉色流淌自然，体现了唐代三彩陶器的装饰艺术特色。",
+                image: "./img/relics/huihua/tang_dai_sancaihu.jpg"
+            },
+            {
+                type: "绘画器皿饰绘",
+                name: "宋代磁州窑白地黑花乐舞纹瓷枕",
+                age: "宋",
+                location: "山东淄博磁村窑",
+                size: "长42厘米，宽28厘米，高12厘米",
+                collection: "淄博市博物馆",
+                description: "白地黑花装饰，枕面绘乐舞场景，线条简练，构图生动，是宋代磁州窑民间装饰艺术的典型代表。",
+                image: "./img/relics/huihua/song_dai_cizhouchaozhen.jpg"
+            },
+            {
+                type: "绘画器皿饰绘",
+                name: "元代青花松竹梅纹瓶",
+                age: "元",
+                location: "山东济宁任城",
+                size: "通高45厘米，口径10厘米，腹径22厘米",
+                collection: "济宁市博物馆",
+                description: "青花瓷器，瓶身绘松、竹、梅“岁寒三友”纹饰，青花发色浓艳，构图疏朗，体现了元代青花瓷器的装饰风格。",
+                image: "./img/relics/huihua/yuan_dai_qinghuaping.jpg"
+            },
+            {
+                type: "绘画器皿饰绘",
+                name: "明代五彩人物纹罐",
+                age: "明",
+                location: "山东烟台蓬莱",
+                size: "通高38厘米，口径16厘米，腹径30厘米",
+                collection: "烟台市博物馆",
+                description: "五彩瓷器，罐身绘乐舞人物纹，色彩艳丽，人物形象生动，是明代中期五彩瓷器的代表作品。",
+                image: "./img/relics/huihua/ming_dai_wucaiguan.jpg"
+            },
+            {
+                type: "绘画器皿饰绘",
+                name: "清代粉彩花鸟纹瓶",
+                age: "清",
+                location: "山东青岛胶州",
+                size: "通高45厘米，口径12厘米，底径14厘米",
+                collection: "青岛市博物馆",
+                description: "粉彩瓷器，瓶身绘花鸟纹饰，色彩柔和，层次丰富，绘画精细，体现了清代粉彩瓷器的装饰艺术成就。",
+                image: "./img/relics/huihua/qing_dai_fencaiping.jpg"
+            },
+            {
+                type: "绘画器皿饰绘",
+                name: "清代鲁绣乐舞图轴",
+                age: "清",
+                location: "山东济南（征集）",
+                size: "纵180厘米，横90厘米",
+                collection: "山东博物馆",
+                description: "鲁绣精品，以丝绣技法表现乐舞场景，针法多样，色彩丰富，人物形象生动，是清代鲁绣艺术的代表作品。",
+                image: "./img/relics/huihua/qing_dai_luxiutu.jpg"
+            }
+        ];
+
+        // DOM元素
+        const relicsGrid = document.getElementById('relicsGrid');
+        const typeTags = document.querySelectorAll('#typeTags .filter-tag'); // 类型筛选标签
+        const ageTags = document.querySelectorAll('#ageTags .filter-tag');   // 年代筛选标签
+        const dataCount = document.getElementById('dataCount');             // 数据统计
+        const detailModal = document.getElementById('detailModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalRelicType = document.getElementById('modalRelicType');   // 弹窗文物类型
+        const modalRelicName = document.getElementById('modalRelicName');
+        const modalRelicMeta = document.getElementById('modalRelicMeta');
+        const modalRelicImg = document.getElementById('modalRelicImg');
+        const modalRelicDetails = document.getElementById('modalRelicDetails');
+
+        // 筛选状态变量
+        let currentType = 'all'; // 当前选中类型
+        let currentAge = 'all';  // 当前选中年代
+
+        // 初始化渲染所有文物
+        renderRelics();
+
+        // 1. 文物类型筛选事件
+        typeTags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                // 更新类型标签活跃状态
+                typeTags.forEach(t => t.classList.remove('active'));
+                tag.classList.add('active');
+                
+                // 更新当前类型并重新渲染
+                currentType = tag.dataset.type;
+                renderRelics();
+            });
+        });
+
+        // 2. 年代筛选事件
+        ageTags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                // 更新年代标签活跃状态
+                ageTags.forEach(t => t.classList.remove('active'));
+                tag.classList.add('active');
+                
+                // 更新当前年代并重新渲染
+                currentAge = tag.dataset.age;
+                renderRelics();
+            });
+        });
+
+        // 核心渲染函数（支持类型+年代双重筛选）
+        function renderRelics() {
+            // 清空列表
+            relicsGrid.innerHTML = '';
+            
+            // 双重筛选逻辑
+            const filteredData = relicsData.filter(relic => {
+                // 类型筛选：全部类型则不筛选，否则匹配类型
+                const typeMatch = currentType === 'all' ? true : relic.type === currentType;
+                // 年代筛选：全部年代则不筛选，否则匹配年代
+                const ageMatch = currentAge === 'all' ? true : relic.age === currentAge;
+                // 同时满足类型和年代条件
+                return typeMatch && ageMatch;
+            });
+            
+            // 更新数据统计
+            const typeText = currentType === 'all' ? '全部类型' : currentType;
+            const ageText = currentAge === 'all' ? '全部年代' : currentAge;
+            dataCount.textContent = `当前显示：${typeText} - ${ageText} (共${filteredData.length}件文物)`;
+            
+            // 无数据提示
+            if (filteredData.length === 0) {
+                const emptyTip = document.createElement('div');
+                emptyTip.style.gridColumn = '1 / -1';
+                emptyTip.style.textAlign = 'center';
+                emptyTip.style.padding = '3rem 0';
+                emptyTip.style.fontSize = '1.1rem';
+                emptyTip.style.color = '#86868b';
+                emptyTip.textContent = '暂无该分类下的文物数据，可尝试其他筛选条件';
+                relicsGrid.appendChild(emptyTip);
+                return;
+            }
+            
+            // 生成文物卡片
+            filteredData.forEach(relic => {
+                const card = document.createElement('div');
+                card.className = 'relic-card';
+                card.dataset.id = relic.name; // 用于标识文物
+                
+                // 处理图片路径，默认图片兜底
+                const imgSrc = relic.image || './img/relics/default.jpg';
+                
+                card.innerHTML = `
+                    <img src="${imgSrc}" alt="${relic.name}" class="relic-img" onerror="this.src='./img/relics/default.jpg'">
+                    <div class="relic-info">
+                        <div class="relic-type">${relic.type}</div>
+                        <h3 class="relic-name">${relic.name}</h3>
+                        <div class="relic-meta">
+                            <span>${relic.age}</span>
+                            <span>·</span>
+                            <span>${relic.location}</span>
+                        </div>
+                        <p class="relic-desc">${relic.description}</p>
+                    </div>
+                `;
+                
+                // 点击卡片查看详情
+                card.addEventListener('click', () => {
+                    showRelicDetail(relic);
+                });
+                
+                relicsGrid.appendChild(card);
+            });
+        }
+
+        // 显示文物详情弹窗
+        function showRelicDetail(relic) {
+            // 填充详情数据
+            modalRelicType.textContent = relic.type;
+            modalRelicName.textContent = relic.name;
+            modalRelicMeta.textContent = `${relic.age} · ${relic.location} · ${relic.collection}`;
+            
+            // 处理图片路径，默认图片兜底
+            const imgSrc = relic.image || './img/relics/default.jpg';
+            modalRelicImg.src = imgSrc;
+            modalRelicImg.alt = relic.name;
+            modalRelicImg.onerror = function() {
+                this.src = './img/relics/default.jpg';
+            };
+            
+            // 构建详情内容
+            modalRelicDetails.innerHTML = `
+                <div class="detail-item">
+                    <div class="detail-label">文物类型</div>
+                    <div class="detail-content">${relic.type}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">年代</div>
+                    <div class="detail-content">${relic.age}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">出土地点</div>
+                    <div class="detail-content">${relic.location}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">文物尺寸</div>
+                    <div class="detail-content">${relic.size}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">收藏单位</div>
+                    <div class="detail-content">${relic.collection}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">文物简介</div>
+                    <div class="detail-content">${relic.description}</div>
+                </div>
+            `;
+            
+            // 显示弹窗
+            detailModal.classList.add('active');
+            // 禁止背景滚动
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭详情弹窗
+        closeModal.addEventListener('click', () => {
+            detailModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // 点击弹窗外部关闭
+        detailModal.addEventListener('click', (e) => {
+            if (e.target === detailModal) {
+                detailModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // 键盘ESC关闭
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && detailModal.classList.contains('active')) {
+                detailModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>
