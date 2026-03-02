@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="./img/logo.png">
+    <title>文物图谱 - 礼乐齐鲁</title>
+    <style>
+        /* 全局样式基础 - 楷体字体体系 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* 楷体为主，保留系统字体降级适配 */
+            font-family: "楷体", "KaiTi", "STKaiti", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            min-height: 100vh;
+            padding-bottom: 4rem;
+        }
+
+        /* 导航栏样式 */
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            color: #1d1d1f;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            background-color: #1d1d1f;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #3a3a3a;
+        }
+
+        /* 页面标题区域 */
+        .page-header {
+            text-align: center;
+            padding: 2.5rem 1rem;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+            color: #1d1d1f;
+        }
+
+        .page-desc {
+            font-size: 1.1rem;
+            color: #86868b;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 分类筛选区 */
+        .category-filter {
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+            padding: 0 1rem;
+        }
+
+        .filter-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #1d1d1f;
+        }
+
+        .category-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .category-tag {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-tag:hover {
+            background-color: #f0f0f0;
+        }
+
+        .category-tag.active {
+            background-color: #1d1d1f;
+            color: white;
+            border-color: #1d1d1f;
+        }
+
+        /* 文物卡片列表 */
+        .relics-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .relic-card {
+            background-color: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .relic-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .relic-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .relic-info {
+            padding: 1.2rem;
+        }
+
+        .relic-name {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #1d1d1f;
+        }
+
+        .relic-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            color: #86868b;
+            font-size: 0.95rem;
+        }
+
+        .relic-desc {
+            font-size: 1rem;
+            color: #555555;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* 详情弹窗样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #86868b;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #1d1d1f;
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-relic-name {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #1d1d1f;
+        }
+
+        .modal-relic-meta {
+            font-size: 1.1rem;
+            color: #86868b;
+        }
+
+        .modal-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .modal-img-container {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .modal-relic-img {
+            width: 100%;
+            height: auto;
+        }
+
+        .modal-relic-details {
+            padding: 0.5rem 0;
+        }
+
+        .detail-item {
+            margin-bottom: 1.2rem;
+        }
+
+        .detail-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: #1d1d1f;
+        }
+
+        .detail-content {
+            font-size: 1rem;
+            color: #555555;
+            line-height: 1.7;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 992px) {
+            .modal-body {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .relics-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .modal-relic-name {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .logo-text {
+                font-size: 1.2rem;
+            }
+            
+            .back-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .page-header {
+                padding: 1.8rem 1rem;
+            }
+            
+            .category-tag {
+                padding: 0.4rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .relic-img {
+                height: 180px;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <img src="./img/logo.png" alt="礼乐齐鲁logo" class="logo-img">
+            <span class="logo-text">礼乐齐鲁</span>
+        </a>
+        <button class="back-btn" onclick="window.history.back()">返回上一页</button>
+    </nav>
+
+    <!-- 页面标题 -->
+    <header class="page-header">
+        <h1 class="page-title">文物图谱</h1>
+        <p class="page-desc">收录山东地区珍贵文物，按年代分类展示，带您领略齐鲁大地的历史文化瑰宝</p>
+    </header>
+
+    <!-- 分类筛选区 -->
+    <section class="category-filter">
+        <h2 class="filter-title">按年代筛选</h2>
+        <div class="category-tags">
+            <div class="category-tag active" data-category="all">全部文物</div>
+            <div class="category-tag" data-category="东汉">东汉</div>
+            <div class="category-tag" data-category="西汉">西汉</div>
+            <div class="category-tag" data-category="北魏">北魏</div>
+            <div class="category-tag" data-category="北齐">北齐</div>
+            <div class="category-tag" data-category="隋">隋</div>
+            <div class="category-tag" data-category="唐">唐</div>
+        </div>
+    </section>
+
+    <!-- 文物卡片列表 -->
+    <section class="relics-grid" id="relicsGrid">
+        <!-- 文物卡片将通过JS动态生成 -->
+    </section>
+
+    <!-- 文物详情弹窗 -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <div class="modal-header">
+                <h2 class="modal-relic-name" id="modalRelicName"></h2>
+                <div class="modal-relic-meta" id="modalRelicMeta"></div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-img-container">
+                    <img src="" alt="" class="modal-relic-img" id="modalRelicImg">
+                </div>
+                <div class="modal-relic-details" id="modalRelicDetails">
+                    <!-- 详情内容将通过JS动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 文物数据（基于Excel文件整理）
+        const relicsData = [
+            {
+                name: "武氏祠画像石",
+                age: "东汉",
+                location: "山东嘉祥",
+                size: "纵142厘米，横146厘米",
+                collection: "山东博物馆",
+                description: "武氏祠画像石是东汉时期的著名石刻艺术品，采用减地浅浮雕技法，画面内容丰富，包括历史故事、神话传说、现实生活等场景。画像线条刚劲有力，人物形象生动传神，具有很高的历史和艺术价值，是研究汉代社会生活、文化思想和美术史的重要资料。",
+                image: "./img/relics/wushici.jpg"
+            },
+            {
+                name: "沂南汉墓画像石",
+                age: "东汉",
+                location: "山东沂南",
+                size: "多块组合，最大单块纵250厘米",
+                collection: "沂南汉墓博物馆",
+                description: "沂南汉墓画像石是东汉晚期的大型画像石墓遗存，画像内容涵盖社会生活的各个方面，如车马出行、乐舞百戏、宴饮祭祀、历史故事等。其雕刻技法精湛，构图严谨，层次分明，尤其是乐舞百戏图，生动展现了汉代的文化娱乐生活，是汉代画像石艺术的杰出代表。",
+                image: "./img/relics/yinan.jpg"
+            },
+            {
+                name: "长清郭店汉墓画像石",
+                age: "西汉",
+                location: "山东长清",
+                size: "纵85厘米，横120厘米",
+                collection: "长清区博物馆",
+                description: "长清郭店汉墓画像石属于西汉时期，是山东地区早期画像石的重要代表。画像内容以现实生活场景为主，包括农耕、狩猎、宴饮等，雕刻技法采用阴线刻，线条简洁流畅，风格古朴浑厚，反映了西汉时期山东地区的社会经济状况和文化风貌。",
+                image: "./img/relics/changqing.jpg"
+            },
+            {
+                name: "青州龙兴寺画像石",
+                age: "北魏",
+                location: "山东青州",
+                size: "纵160厘米，横80厘米",
+                collection: "青州博物馆",
+                description: "青州龙兴寺画像石为北魏时期佛教题材画像石，主要描绘佛教故事和佛像形象。画像采用高浮雕技法，佛像面容慈祥，衣纹流畅，具有典型的北魏佛教艺术风格。该画像石不仅是佛教艺术的重要遗存，也为研究北魏时期青州地区的佛教传播和艺术发展提供了珍贵资料。",
+                image: "./img/relics/qingzhou.jpg"
+            },
+            {
+                name: "临朐北齐画像石",
+                age: "北齐",
+                location: "山东临朐",
+                size: "纵150厘米，横75厘米",
+                collection: "临朐县博物馆",
+                description: "临朐北齐画像石在题材和风格上既有对前代的继承，又有新的发展。画像内容包括佛教故事、历史典故和世俗生活场景，雕刻技法更加成熟，人物形象比例协调，表情生动，线条细腻流畅，体现了北齐时期画像石艺术的独特风格和高超水平。",
+                image: "./img/relics/linqu.jpg"
+            },
+            {
+                name: "曲阜隋代画像石",
+                age: "隋",
+                location: "山东曲阜",
+                size: "纵130厘米，横90厘米",
+                collection: "曲阜市博物馆",
+                description: "曲阜隋代画像石数量较少，但具有重要的过渡意义。画像内容以传统的历史故事和现实生活为主，同时融入了一些新的元素，雕刻技法在继承北齐风格的基础上有所创新，线条更加圆润，构图更加简洁明快，为唐代画像石艺术的发展奠定了基础。",
+                image: "./img/relics/qufu_sui.jpg"
+            },
+            {
+                name: "济宁唐代画像石",
+                age: "唐",
+                location: "山东济宁",
+                size: "纵180厘米，横100厘米",
+                collection: "济宁市博物馆",
+                description: "济宁唐代画像石是唐代画像石艺术的重要代表，题材更加丰富多样，包括人物、动物、花卉、山水等。其雕刻技法精湛，采用线刻与浮雕相结合的方式，画面立体感强，色彩虽然大多已脱落，但仍能看出当时的艺术风貌，反映了唐代社会的繁荣和文化的昌盛。",
+                image: "./img/relics/jining_tang.jpg"
+            },
+            {
+                name: "滕州汉墓画像石",
+                age: "东汉",
+                location: "山东滕州",
+                size: "纵120厘米，横150厘米",
+                collection: "滕州市博物馆",
+                description: "滕州汉墓画像石是东汉时期画像石的重要组成部分，内容丰富多样，涵盖神话传说、历史故事、社会生活等多个领域。其雕刻风格独特，线条刚健有力，人物形象栩栩如生，尤其是车马出行图，场面宏大，构图严谨，充分展现了汉代滕州地区的繁华景象和高超的艺术水平。",
+                image: "./img/relics/tengzhou.jpg"
+            }
+        ];
+
+        // DOM元素
+        const relicsGrid = document.getElementById('relicsGrid');
+        const categoryTags = document.querySelectorAll('.category-tag');
+        const detailModal = document.getElementById('detailModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalRelicName = document.getElementById('modalRelicName');
+        const modalRelicMeta = document.getElementById('modalRelicMeta');
+        const modalRelicImg = document.getElementById('modalRelicImg');
+        const modalRelicDetails = document.getElementById('modalRelicDetails');
+
+        // 初始化渲染所有文物
+        renderRelics('all');
+
+        // 分类筛选事件
+        categoryTags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                // 更新活跃状态
+                categoryTags.forEach(t => t.classList.remove('active'));
+                tag.classList.add('active');
+                
+                // 渲染对应分类的文物
+                const category = tag.dataset.category;
+                renderRelics(category);
+            });
+        });
+
+        // 渲染文物列表
+        function renderRelics(category) {
+            // 清空列表
+            relicsGrid.innerHTML = '';
+            
+            // 筛选数据
+            let filteredData = relicsData;
+            if (category !== 'all') {
+                filteredData = relicsData.filter(relic => relic.age === category);
+            }
+            
+            // 生成卡片
+            filteredData.forEach(relic => {
+                const card = document.createElement('div');
+                card.className = 'relic-card';
+                card.dataset.id = relic.name; // 用于标识文物
+                
+                card.innerHTML = `
+                    <img src="${relic.image}" alt="${relic.name}" class="relic-img">
+                    <div class="relic-info">
+                        <h3 class="relic-name">${relic.name}</h3>
+                        <div class="relic-meta">
+                            <span>${relic.age}</span>
+                            <span>·</span>
+                            <span>${relic.location}</span>
+                        </div>
+                        <p class="relic-desc">${relic.description}</p>
+                    </div>
+                `;
+                
+                // 点击卡片查看详情
+                card.addEventListener('click', () => {
+                    showRelicDetail(relic);
+                });
+                
+                relicsGrid.appendChild(card);
+            });
+        }
+
+        // 显示文物详情
+        function showRelicDetail(relic) {
+            // 填充详情数据
+            modalRelicName.textContent = relic.name;
+            modalRelicMeta.textContent = `${relic.age} · ${relic.location} · ${relic.collection}`;
+            modalRelicImg.src = relic.image;
+            modalRelicImg.alt = relic.name;
+            
+            // 构建详情内容
+            modalRelicDetails.innerHTML = `
+                <div class="detail-item">
+                    <div class="detail-label">出土地点</div>
+                    <div class="detail-content">${relic.location}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">文物尺寸</div>
+                    <div class="detail-content">${relic.size}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">收藏单位</div>
+                    <div class="detail-content">${relic.collection}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">文物简介</div>
+                    <div class="detail-content">${relic.description}</div>
+                </div>
+            `;
+            
+            // 显示弹窗
+            detailModal.classList.add('active');
+            // 禁止背景滚动
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭详情弹窗
+        closeModal.addEventListener('click', () => {
+            detailModal.classList.remove('active');
+            // 恢复背景滚动
+            document.body.style.overflow = 'auto';
+        });
+
+        // 点击弹窗外部关闭弹窗
+        detailModal.addEventListener('click', (e) => {
+            if (e.target === detailModal) {
+                detailModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // 键盘ESC关闭弹窗
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && detailModal.classList.contains('active')) {
+                detailModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>
