@@ -5,11 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>礼乐寻音 - 文物人格鉴定书</title>
     <style>
+                /* 全局样式基础 - 楷体字体体系 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Microsoft YaHei", sans-serif;
+            /* 楷体为主，保留系统字体降级适配 */
+            font-family: "楷体", "KaiTi", "STKaiti", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         body {
             background: linear-gradient(135deg, #f5f1e8, #e8dcc5);

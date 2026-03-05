@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>礼乐齐鲁-每日文物</title>
+    
     <style>
         /* 全局重置 & 苹果风格基础配置 */
+            /* 全局样式基础 - 楷体字体体系 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            /* 楷体为主，保留系统字体降级适配 */
+            font-family: "楷体", "KaiTi", "STKaiti", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
