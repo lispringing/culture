@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>礼乐齐鲁-每日文物</title>
-    
+    <link rel="icon" type="image/png" href="./img/logo.png">
     <style>
+        /* 原有样式保持不变，此处省略（可直接复用原代码的style部分） */
         /* 全局重置 & 苹果风格基础配置 */
             /* 全局样式基础 - 楷体字体体系 */
         * {
@@ -255,50 +256,25 @@
     </div>
 
     <script>
-        // 1. 文物数据列表（可自行扩展，按顺序每日轮播）
-        const relicList = [
-            {
-                img: "./today/image.png", // 示例图，替换为真实文物图片
-                name: "日照东海峪陶响器",
-                desc: "器黑陶质，表面光滑，形如蚌壳，腹背两面隆起，为上大下小不规则椭圆体。中部左、右两侧各捏进1个部，手捏痕迹明显，似为手执之用。腹面下部4个小圆孔，呈八字形排列，背面沿外缘处上、下各有1个弧形长孔，如蚌口微开，似做扩声之用。内有7颗陶丸，摇动时发出清脆的声响。 长8.6、宽8.5、厚4.2厘米，周边外缘收口最宽处1.0厘米。"
-            },
-            {
-                img: "./today/image (1).png",
-                name: "胶南西寺村陶响器",
-                desc: "保存较好，泥质黑陶。其造型独特，制作精美，外表似蚌壳，呈椭圆形，两侧有对称的弧形缺口，口长7.5、 宽0.5厘米。缺口两端各有一凹槽，便于摇动时两指捏住。器体分为上、下两半，上半部小，下半部略大，口沿外侈，腹部 一侧有4个圆形透孔。响器内有3个泥质小圆球，通过圆球撞 击外壳发出声音，清脆悦耳。"
-            },
-            {
-                img: "./today/image (2).png",
-                name: "莒县陵阳河陶角",
-                desc: "器系黄褐色夹砂陶。手制，形如去尖的黄牛角，呈弯曲圆锥筒状。角口平齐，体表刻三组凸弦纹间以两组凸斜条纹为饰。通长39.0厘米，吹口内径0.8～1.2厘米，外径2.0~2.7厘米，角口内径6.4厘米、外径8.5厘米。"
-            },
-            {
-                img: "./today/image (3).png",
-                name: "济南大辛庄骨哨",
-                desc: "器系截取一段兽骨制成。骨管两端磨平，中间一侧开一指孔。外表磨光，内腔经修整。可吹3个音。外表部分附着水垢。管长5.5厘米，两端管径相近，直径1.9～2.2、孔 径0.5厘米，壁厚0.2厘米左右。"
-            },
-            {
-                img: "./today/image (4).png",
-                name: "莒县陵阳河笛柄杯",
-                desc: "杯为泥质黑陶质，圆唇，口微侈，腰略直，圜底，圆柄中空，呈管状，粗细匀称，喇叭状足。柄对侧各雕镂  一大小相同、不相对称的圆形镂孔，中部饰二道竹节纹，出土时，杯部涂朱口，杯通高16.4、口径6.7、腹深8.4、杯高8.4、 外径1.5、足径6.0厘米。管状柄上端管口为杯底所堵，下端管口与喇叭状足相通，内径0.9厘米。圆形镂孔，边棱整齐，径0.8厘米，较低一孔下沿距柄足底沿3.6厘米。"
-            },{
-                img: "./today/image (5).png",
-                name: "章丘城子崖陶响器",
-                desc: "泥质黑陶，龟形，中空；长8.8、宽7.8、高3.5厘米。上部磨光隆起似龟背，底部扁平无光似龟腹，背腹之间环绕器体塑有  6个长条形的突，恰似龟的头、尾和四条短腿；头尾两侧有4个细长方  形的孔，自孔中可以窥见中空的腹中有数粒硬质泥丸(径约4毫米),  底部也有4个圆形小孔(径约3毫米),用以传音；摇动器体，泥丸撞  击器壁，即会发出沙沙的声音。"
-            },{
-                img: "./today/image (6).png",
-                name: "莒县大朱陶角",
-                desc: "黄白色夹砂陶。手制，形如去尖的黄牛角，呈弯曲号筒状。通长32.0厘米，吹口内径1.5、外径2.4厘米，角口外径8.5厘米。角口平齐，体表刻三组凸弦纹间以两组凸斜条纹为饰。"
-            },{
-                img: "./today/image (7).png",
-                name: "荏平南陈庄骨哨",
-                desc: "器系截取一段兽骨制成。骨管两端磨平，中间一侧开一指孔。管长5.6厘米，两端管径相近，内径0.53、外径0.92厘米。"
+        // 1. 新增：加载JSON数据的函数
+        async function loadRelicData() {
+            try {
+                // 加载本地JSON文件
+                const response = await fetch('./json/index.json');
+                if (!response.ok) {
+                    throw new Error(`加载JSON失败：${response.status}`);
+                }
+                const relicList = await response.json();
+                return relicList;
+            } catch (error) {
+                console.error('JSON加载出错：', error);
+                // 加载失败时的兜底数据（可选）
+                return [];
             }
-            // 可继续添加更多文物数据
-        ];
+        }
 
-        // 2. 获取今日日期并计算索引（实现每日切换）
-        function getTodayRelicIndex() {
+        // 2. 原有逻辑：计算今日文物索引（保持不变）
+        function getTodayRelicIndex(relicListLength) {
             // 获取当前日期的时间戳（仅按日期计算，忽略时分秒）
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -313,12 +289,21 @@
             const dayDiff = Math.floor((todayTime - baseTime) / (24 * 60 * 60 * 1000));
             
             // 按文物列表长度取模，实现循环轮播
-            return dayDiff % relicList.length;
+            return dayDiff % relicListLength;
         }
 
-        // 3. 渲染今日文物内容
-        function renderTodayRelic() {
-            const index = getTodayRelicIndex();
+        // 3. 修改：渲染今日文物内容（改为异步加载JSON后渲染）
+        async function renderTodayRelic() {
+            // 加载JSON数据
+            const relicList = await loadRelicData();
+            if (relicList.length === 0) {
+                document.getElementById('relicName').textContent = '数据加载失败';
+                document.getElementById('relicDesc').textContent = '请检查JSON文件是否存在或格式是否正确';
+                return;
+            }
+            
+            // 计算今日索引
+            const index = getTodayRelicIndex(relicList.length);
             const todayRelic = relicList[index];
             
             // 填充图片、名称、介绍
@@ -337,7 +322,7 @@
             document.getElementById("todayDate").textContent = dateStr;
         }
 
-        // 4. 按钮点击事件（可根据实际需求修改）
+        // 4. 按钮点击事件（保持不变）
         document.querySelector('.home-btn').addEventListener('click', function() {
             // 此处直接回到上一页了
             window.history.back();
@@ -359,7 +344,7 @@
             // });
         });
 
-        // 页面加载时执行渲染
+        // 页面加载时执行渲染（异步）
         window.onload = renderTodayRelic;
     </script>
 </body>
