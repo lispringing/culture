@@ -618,6 +618,7 @@
         <button class="area-btn" data-area="淄博" style="top: 40%; left: 50%;">淄博</button>
         <button class="area-btn" data-area="济宁" style="top: 55%; left: 45%;">济宁</button>
         <button class="area-btn" data-area="临沂" style="top: 60%; left: 65%;">临沂</button>
+        <button class="area-btn" data-area="枣庄市" style="top: 33%; left: 65%;">枣庄</button>
         
         <!-- 地区弹窗容器 -->
         <div class="area-modal" id="areaModal">
@@ -702,11 +703,11 @@
                 </div>
                 <div class="modal-relic-details" id="modalRelicDetails">
                     <div class="detail-item">
-                        <div class="detail-label">尺寸</div>
+                        <div class="detail-label">时间</div>
                         <div class="detail-content" id="modalRelicSize"></div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">馆藏单位</div>
+                        <div class="detail-label">馆藏单位/地区</div>
                         <div class="detail-content" id="modalRelicCollection"></div>
                     </div>
                     <div class="detail-item">
@@ -741,7 +742,7 @@
         // 1. 加载JSON数据
         async function loadRelicsData() {
             try {
-                const response = await fetch('./relics-data.json');
+                const response = await fetch('./json/relics.json');
                 if (!response.ok) throw new Error('数据加载失败');
                 relicsData = await response.json();
                 loadingTip.remove(); // 移除加载提示
