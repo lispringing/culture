@@ -24,57 +24,37 @@
             position: relative; /* 为弹窗绝对定位提供基准 */
         }
 
-        /* 导航栏样式 */
-        .navbar {
-            background-color: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            text-decoration: none;
-        }
-
-        .logo-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-        }
-
-        .logo-text {
-            font-size: 1.5rem;
-            color: #1d1d1f;
-            font-weight: 600;
-        }
-
+        /* 返回按钮样式 - 圆形设计 */
         .back-btn {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
             background-color: #1d1d1f;
             color: white;
             border: none;
-            padding: 0.5rem 1.2rem;
-            border-radius: 8px;
+            border-radius: 50%; /* 改为圆形 */
+            width: 3.5rem; /* 固定宽高实现正圆 */
+            height: 3.5rem;
             font-size: 1rem;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease; /* 增加所有属性过渡 */
+            z-index: 1000; /* 最高层级，确保不被遮挡 */
+            display: flex; /* 居中对齐文字 */
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* 增加阴影提升质感 */
         }
 
         .back-btn:hover {
             background-color: #3a3a3a;
+            transform: scale(1.05); /* hover时轻微放大 */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* 页面标题区域 */
+        /* 页面标题区域 - 调整上边距，适配返回按钮 */
         .page-header {
             text-align: center;
-            padding: 2.5rem 1rem;
+            padding: 4rem 1rem 2.5rem; /* 增加上边距，避免被返回按钮遮挡 */
         }
 
         .page-title {
@@ -543,24 +523,18 @@
                 padding: 0.4rem 1rem;
                 font-size: 0.95rem;
             }
-
-            .navbar {
-                padding: 1rem;
-            }
             
-            .logo-text {
-                font-size: 1.2rem;
-            }
-            
+            /* 移动端圆形返回按钮适配 */
             .back-btn {
-                padding: 0.4rem 0.8rem;
+                width: 3rem;
+                height: 3rem;
                 font-size: 0.9rem;
             }
         }
 
         @media (max-width: 576px) {
             .page-header {
-                padding: 1.8rem 1rem;
+                padding: 3.5rem 1rem 1.8rem; /* 移动端微调上边距 */
             }
             
             .filter-tag {
@@ -590,36 +564,40 @@
                 padding: 0.3rem 0.6rem;
                 font-size: 0.8rem;
             }
+            
+            /* 小屏移动端圆形返回按钮进一步适配 */
+            .back-btn {
+                top: 0.8rem;
+                left: 0.8rem;
+                width: 2.8rem;
+                height: 2.8rem;
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 导航栏 -->
-    <nav class="navbar">
-        <a href="index.html" class="logo">
-            <img src="./img/logo.png" alt="礼乐齐鲁logo" class="logo-img">
-            <span class="logo-text">礼乐齐鲁</span>
-        </a>
-        <button class="back-btn" onclick="window.history.back()">返回上一页</button>
-    </nav>
+    <!-- 独立圆形返回按钮 -->
+    <button class="back-btn" onclick="window.history.back()">←</button>
 
     <!-- 页面标题 -->
     <header class="page-header">
         <h1 class="page-title">文物图谱</h1>
-        <p class="page-desc">完整收录山东地区五类珍贵文物，涵盖画像石、乐器、乐舞俑、佛寺造像石刻、绘画器皿饰绘，总计68件文物</p>
+        <p class="page-desc">完整收录山东地区五类珍贵文物，涵盖画像石、乐器、乐舞俑、佛寺造像石刻、绘画器皿饰绘。</p>
     </header>
 
     <!-- 山东地图区域 - 移动端适配核心 -->
     <div class="map-container" id="mapContainer">
         <img src="./img/map.png" alt="山东地图" class="shandong-map">
         <!-- 地区按钮示例 - 按实际坐标调整top/left -->
-        <button class="area-btn" data-area="济南" style="top: 45%; left: 40%;">济南</button>
-        <button class="area-btn" data-area="青岛" style="top: 35%; left: 75%;">青岛</button>
-        <button class="area-btn" data-area="淄博" style="top: 40%; left: 50%;">淄博</button>
-        <button class="area-btn" data-area="济宁" style="top: 55%; left: 45%;">济宁</button>
-        <button class="area-btn" data-area="临沂" style="top: 60%; left: 65%;">临沂</button>
-        <button class="area-btn" data-area="枣庄市" style="top: 33%; left: 65%;">枣庄</button>
-        
+        <button class="area-btn" data-area="济南市" style="top: 45%; left: 35%;">济南</button>
+        <button class="area-btn" data-area="青岛市" style="top: 55%; left: 70%;">青岛</button>
+        <button class="area-btn" data-area="淄博市" style="top: 43%; left: 43%;">淄博</button>
+        <button class="area-btn" data-area="济宁市" style="top: 65%; left: 28%;">济宁</button>
+        <button class="area-btn" data-area="临沂市" style="top: 70%; left: 45%;">临沂</button>
+        <button class="area-btn" data-area="枣庄市" style="top: 73%; left: 36%;">枣庄</button>
+        <button class="area-btn" data-area="烟台市" style="top: 35%; left: 75%;">烟台</button>
+        <button class="area-btn" data-area="威海市" style="top: 35%; left: 87%;">威海</button>
         <!-- 地区弹窗容器 -->
         <div class="area-modal" id="areaModal">
             <!-- 弹窗筛选栏 -->
@@ -641,12 +619,12 @@
         <div class="type-filter">
             <h2 class="filter-title">文物类型</h2>
             <div class="filter-tags" id="typeTags">
-                <div class="filter-tag active" data-type="all">全部类型 (68件)</div>
-                <div class="filter-tag" data-type="画像石">画像石 (18件)</div>
-                <div class="filter-tag" data-type="乐器">乐器 (15件)</div>
-                <div class="filter-tag" data-type="乐舞俑">乐舞俑 (12件)</div>
-                <div class="filter-tag" data-type="佛寺造像石刻">佛寺造像、石刻 (13件)</div>
-                <div class="filter-tag" data-type="绘画器皿饰绘">绘画、器皿饰绘 (10件)</div>
+                <div class="filter-tag active" data-type="all">全部类型</div>
+                <div class="filter-tag" data-type="画像石">画像石</div>
+                <div class="filter-tag" data-type="乐器">乐器</div>
+                <div class="filter-tag" data-type="乐舞俑">乐舞俑</div>
+                <div class="filter-tag" data-type="佛寺造像石刻">佛寺造像、石刻</div>
+                <div class="filter-tag" data-type="绘画器皿饰绘">绘画、器皿饰绘</div>
             </div>
         </div>
 
@@ -680,7 +658,7 @@
     </section>
 
     <!-- 数据统计提示 -->
-    <div class="data-count" id="dataCount">当前显示：全部类型 - 全部年代 (共68件文物)</div>
+    <div class="data-count" id="dataCount">当前显示：全部类型 - 全部年代</div>
 
     <!-- 文物卡片列表 -->
     <section class="relics-grid" id="relicsGrid">
@@ -726,6 +704,15 @@
         let currentAge = 'all';
         let currentArea = '';
 
+        // 配置多个JSON数据源路径
+        const jsonFilePaths = [
+            './json/pic.json',
+            './json/music.json',
+            './json/dancer.json',
+            './json/stone.json'
+            // 可继续添加更多JSON文件路径
+        ];
+
         // DOM元素
         const mapContainer = document.getElementById('mapContainer');
         const areaModal = document.getElementById('areaModal');
@@ -739,12 +726,21 @@
         const closeModal = document.getElementById('closeModal');
         const loadingTip = document.getElementById('loadingTip');
 
-        // 1. 加载JSON数据
+        // 1. 加载多个JSON文件并合并数据
         async function loadRelicsData() {
             try {
-                const response = await fetch('./json/relics.json');
-                if (!response.ok) throw new Error('数据加载失败');
-                relicsData = await response.json();
+                // 并行加载所有JSON文件
+                const fetchPromises = jsonFilePaths.map(path => 
+                    fetch(path).then(response => {
+                        if (!response.ok) throw new Error(`加载${path}失败`);
+                        return response.json();
+                    })
+                );
+                
+                // 等待所有请求完成并合并数据
+                const allData = await Promise.all(fetchPromises);
+                relicsData = allData.flat(); // 扁平化数组（合并多个JSON的数组）
+
                 loadingTip.remove(); // 移除加载提示
                 renderRelicGrid(); // 初始化渲染卡片
             } catch (error) {
