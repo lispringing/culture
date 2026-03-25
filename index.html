@@ -62,7 +62,7 @@
 
         .subtitle {
             font-size: 1rem;
-            color: #86868b;
+            color: #1d1d1f;
             font-weight: 400;
             letter-spacing: 0.01rem;
         }
@@ -128,7 +128,7 @@
             padding: 10px 5px;
             text-align: center;
             font-size: 1.5rem;
-            color: #B37A55;
+            color: #8e4b1e;
             font-weight: 600;
             letter-spacing: 0.05rem;
             background-color: rgba(255, 255, 255, 0);
@@ -214,7 +214,7 @@
 
         .carousel-desc {
             font-size: 1.1rem;
-            color: #86868b;
+            color: #1d1d1f;
             text-align: center;
             max-width: 90%;
         }
@@ -287,6 +287,35 @@
             border-radius: 4px;
         }
 
+        /* ========== 页脚样式 ========== */
+        .footer {
+            width: 100%;
+            max-width: 800px;
+            margin-top: auto; /* 固定在页面底部 */
+            padding: 2rem 1rem 1rem;
+            text-align: center;
+            color: #1d1d1f;
+            border-top: 1px solid rgba(134, 134, 139, 0.2);
+        }
+
+        .run-time {
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+            color: #a95117;
+            font-weight: 500;
+        }
+
+        .footer-info {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .copyright {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #1d1d1f;
+        }
+
         /* ========== 响应式适配 ========== */
         @media (max-width: 768px) {
             h1 {
@@ -300,7 +329,7 @@
                 border-radius: 0;
             }
             .func-text {
-                font-size: 1rem;
+                font-size: 1.5rem;
             }
             .recommend-title {
                 font-size: 1.5rem;
@@ -310,6 +339,12 @@
             }
             .carousel-desc {
                 font-size: 1rem;
+            }
+            .run-time {
+                font-size: 0.9rem;
+            }
+            .footer-info {
+                font-size: 0.8rem;
             }
         }
 
@@ -334,6 +369,15 @@
             }
             .carousel-desc {
                 font-size: 0.9rem;
+            }
+            .footer {
+                padding: 1.5rem 0.5rem 0.8rem;
+            }
+            .run-time {
+                font-size: 0.8rem;
+            }
+            .footer-info {
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -418,6 +462,18 @@
         </div>
     </div>
 
+    <!-- 新增页脚区域 -->
+    <footer class="footer">
+        <div class="run-time" id="runTime">网站已运行：0天0时0分0秒</div>
+        <div class="footer-info">
+            <p>礼乐齐鲁 · 山东音乐文物数字平台</p>
+            <p>联系我们：2638526782@qq.com | 由鲸鱼1.0引擎强力驱动 | Made BY <a href="https://www.springing.top">小春子</a> With Love</p>
+        </div>
+        <div class="copyright">
+            © 2026 礼乐齐鲁 版权所有 | 鲁ICP备2022030058号
+        </div>
+    </footer>
+
     <script>
         // 轮播交互逻辑
         document.addEventListener('DOMContentLoaded', function() {
@@ -466,6 +522,27 @@
             const carouselContainer = document.querySelector('.carousel-container');
             carouselContainer.addEventListener('mouseenter', () => clearInterval(autoPlayTimer));
             carouselContainer.addEventListener('mouseleave', () => startAutoPlay());
+
+            // 网站运行时间计算逻辑
+            // 请将下面的 startDate 替换为网站实际上线日期
+            const startDate = new Date('2026-03-15 00:00:00');
+            function updateRunTime() {
+                const now = new Date();
+                const diff = now - startDate;
+                
+                // 计算天、时、分、秒
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.getElementById('runTime').textContent = 
+                    `平台已运行：${days}天${hours}时${minutes}分${seconds}秒`;
+            }
+
+            // 初始化并每秒更新运行时间
+            updateRunTime();
+            setInterval(updateRunTime, 1000);
         });
     </script>
 </body>
