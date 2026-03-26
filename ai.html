@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>礼乐重闻</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 页面基础样式 */
+        body {
+            background-color: #f0e6d2; /* 仿宣纸底色 */
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d9c8b0' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+            font-family: "楷体", "KaiTi", "STKaiti", serif;
+            min-height: 100vh;
+            overflow: hidden; /* 隐藏滚动条 */
+        }
+
+        /* 滑动容器核心样式 */
+        .slider-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            transition: transform 0.5s ease; /* 滑动过渡动画 */
+        }
+
+        /* 每个板块样式（占满全屏） */
+        .slider-section {
+            min-width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 10px;
+            overflow-y: auto; /* 单个板块内容超出可纵向滚动 */
+        }
+
+        /* 卷轴标题区域 */
+        .scroll-container {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .scroll-bg {
+            width: 100%;
+            border: 8px solid #8b5a2b; /* 卷轴边框色 */
+            border-radius: 4px;
+            background-color: #fff8e8;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+            /* 新增水墨背景 */
+            background-image: url("https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/e53d435328e84839a9b682043206958d.jpg~tplv-a9rns2rl98-24:720:720.jpg");
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* 卷轴两端装饰 */
+        .scroll-bg::before, .scroll-bg::after {
+            content: "";
+            position: absolute;
+            top: -8px;
+            width: 30px;
+            height: calc(100% + 16px);
+            background-color: #5d4037;
+            border-radius: 8px;
+        }
+
+        .scroll-bg::before {
+            left: -8px;
+        }
+
+        .scroll-bg::after {
+            right: -8px;
+        }
+
+        /* 卷轴顶部轴头 */
+        .scroll-ends {
+            position: absolute;
+            top: -15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            z-index: 2;
+        }
+
+        .scroll-end {
+            width: 30px;
+            height: 30px;
+            background-color: #5d4037;
+            border-radius: 50%;
+            border: 2px solid #3e2723;
+        }
+
+        /* 标题文字 */
+        .main-title {
+            font-size: 6vw;
+            color: #d4af37; /* 烫金色 */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            padding: 30px 20px;
+            /* 新增半透明背景提升可读性 */
+            background: rgba(255, 248, 232, 0.8);
+            margin: 0;
+        }
+
+        /* 进入旅途按钮 */
+        .enter-btn {
+            margin-top: 15px;
+            padding: 8px 30px;
+            background-color: #fff8e8;
+            border: 2px solid #8b5a2b;
+            border-radius: 20px;
+            font-size: 4vw;
+            color: #5d4037;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .enter-btn:hover {
+            background-color: #f5e6c8;
+            transform: scale(1.05);
+        }
+
+        /* 项目介绍卡片 */
+        .intro-card {
+            width: 100%;
+            max-width: 700px;
+            background-color: #fff8e8;
+            border: 3px solid #8b5a2b;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            position: relative;
+        }
+
+        /* 卡片标题 */
+        .card-title {
+            text-align: center;
+            font-size: 5vw;
+            color: #5d4037;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        /* 卡片内容 */
+        .card-content {
+            font-size: 3.5vw;
+            line-height: 1.8;
+            color: #3e2723;
+            text-indent: 2em;
+        }
+
+        .card-content p {
+            margin-bottom: 15px;
+        }
+
+        /* 底部按钮栏 */
+        .btn-bar {
+            width: 100%;
+            max-width: 700px;
+            background-color: #8b5a2b;
+            border-radius: 25px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* 底部按钮样式 */
+        .nav-btn {
+            background-color: #d4af37;
+            border: 2px solid #5d4037;
+            border-radius: 15px;
+            padding: 10px 20px;
+            font-size: 3.5vw;
+            color: #3e2723;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            flex: 1;
+            margin: 0 5px;
+            max-width: 180px;
+        }
+
+        .nav-btn:hover {
+            background-color: #f0c808;
+            transform: translateY(-2px);
+        }
+
+        /* 装饰元素 - 左下角古风人物 */
+        .decor-character {
+            position: fixed;
+            bottom: 20px;
+            left: 10px;
+            width: 80px;
+            height: auto;
+            opacity: 0.7;
+            z-index: 1;
+        }
+
+        /* 滑动指示器（显示当前板块） */
+        .slider-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 99;
+        }
+
+        .indicator-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #8b5a2b;
+            opacity: 0.5;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .indicator-dot.active {
+            opacity: 1;
+            transform: scale(1.2);
+            background-color: #d4af37;
+        }
+
+        /* 响应式适配 - 大屏设备 */
+        @media (min-width: 768px) {
+            .main-title {
+                font-size: 48px;
+            }
+
+            .enter-btn {
+                font-size: 24px;
+            }
+
+            .card-title {
+                font-size: 36px;
+            }
+
+            .card-content {
+                font-size: 18px;
+            }
+
+            .nav-btn {
+                font-size: 18px;
+                padding: 12px 25px;
+            }
+
+            .decor-character {
+                width: 120px;
+            }
+
+            .indicator-dot {
+                width: 15px;
+                height: 15px;
+            }
+        }
+
+        /* 隐藏移动端滚动条 */
+        ::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 滑动容器 -->
+    <div class="slider-container" id="sliderContainer">
+        <!-- 板块1：礼乐人生（原页面） -->
+        <section class="slider-section">
+            <!-- 卷轴标题区域 -->
+            <div class="scroll-container">
+                <div class="scroll-ends">
+                    <div class="scroll-end"></div>
+                    <div class="scroll-end"></div>
+                </div>
+                <div class="scroll-bg">
+                    <h1 class="main-title">礼乐人生</h1>
+                </div>
+                <button class="enter-btn">进入旅途</button>
+            </div>
+
+            <!-- 项目介绍卡片 -->
+            <div class="intro-card">
+                <h2 class="card-title">项目介绍</h2>
+                <div class="card-content">
+                    <p>体验项目全长约28分钟，项目主题为“礼乐人生”。项目内容依据《礼记》、《仪礼》等经典，选取冠礼、学礼、乡饮酒礼、婚礼、祭礼五个士人一生中重要的礼仪，展现出一套完整的“成人、成学、成和、成家、成礼”的叙事逻辑。</p>
+                    <p>项目采用“人生画卷”概念，用户体验以进入水墨画卷开始，以画卷合拢结束。项目设计了虚拟士人向导阿乐，引领用户依次体验其一生中亲历的五个重要礼乐场景。</p>
+                </div>
+            </div>
+
+            <!-- 底部按钮栏 -->
+            <div class="btn-bar">
+                <button class="nav-btn">项目介绍</button>
+                <button class="nav-btn">预售购票</button>
+                <button class="nav-btn">线上体验</button>
+            </div>
+        </section>
+
+        <!-- 板块2：冠礼详解 -->
+        <section class="slider-section">
+            <div class="scroll-container">
+                <div class="scroll-ends">
+                    <div class="scroll-end"></div>
+                    <div class="scroll-end"></div>
+                </div>
+                <div class="scroll-bg">
+                    <h1 class="main-title">冠礼之仪</h1>
+                </div>
+                <button class="enter-btn">体验冠礼</button>
+            </div>
+
+            <div class="intro-card">
+                <h2 class="card-title">冠礼介绍</h2>
+                <div class="card-content">
+                    <p>冠礼是古代汉族男性的成年礼，通常在男子二十岁时举行。冠礼标志着男子从少年步入成年，拥有了参与家族和社会事务的权利与责任。</p>
+                    <p>仪式包括筮日、戒宾、加冠、取字等环节，加冠一般分三次，分别加缁布冠、皮弁、爵弁，象征着男子拥有治人、为国出力、参加祭祀的权利。</p>
+                </div>
+            </div>
+
+            <div class="btn-bar">
+                <button class="nav-btn">礼仪流程</button>
+                <button class="nav-btn">服饰展示</button>
+                <button class="nav-btn">文化解读</button>
+            </div>
+        </section>
+
+        <!-- 板块3：婚礼之美 -->
+        <section class="slider-section">
+            <div class="scroll-container">
+                <div class="scroll-ends">
+                    <div class="scroll-end"></div>
+                    <div class="scroll-end"></div>
+                </div>
+                <div class="scroll-bg">
+                    <h1 class="main-title">婚礼之美</h1>
+                </div>
+                <button class="enter-btn">体验婚礼</button>
+            </div>
+
+            <div class="intro-card">
+                <h2 class="card-title">婚礼介绍</h2>
+                <div class="card-content">
+                    <p>古代婚礼遵循“六礼”：纳采、问名、纳吉、纳征、请期、亲迎。六礼完备，婚姻始成，体现了对婚姻的郑重与尊重。</p>
+                    <p>婚礼以“昏礼”为名，取黄昏之时阴阳交合之意，仪式注重礼仪规范，强调夫妇之义与家族传承，是礼乐文化中重要的组成部分。</p>
+                </div>
+            </div>
+
+            <div class="btn-bar">
+                <button class="nav-btn">六礼详解</button>
+                <button class="nav-btn">传统服饰</button>
+                <button class="nav-btn">礼仪演示</button>
+            </div>
+
+        </section>
+
+        <!-- 板块4：祭礼之诚 -->
+        <section class="slider-section">
+            <div class="scroll-container">
+                <div class="scroll-ends">
+                    <div class="scroll-end"></div>
+                    <div class="scroll-end"></div>
+                </div>
+                <div class="scroll-bg">
+                    <h1 class="main-title">祭礼之诚</h1>
+                </div>
+                <button class="enter-btn">体验祭礼</button>
+            </div>
+
+            <div class="intro-card">
+                <h2 class="card-title">祭礼介绍</h2>
+                <div class="card-content">
+                    <p>祭礼是古代祭祀天地、祖先、神灵的礼仪，是礼乐文化中最庄严的部分。祭礼强调“诚”与“敬”，体现了对天地先祖的敬畏之心。</p>
+                    <p>祭祀仪式有严格的流程和礼器使用规范，包括斋戒、陈设、迎神、献祭、送神等环节，通过仪式表达感恩与祈福之情。</p>
+                </div>
+            </div>
+
+            <div class="btn-bar">
+                <button class="nav-btn">祭祀流程</button>
+                <button class="nav-btn">礼器展示</button>
+                <button class="nav-btn">文化内涵</button>
+            </div>
+
+        </section>
+
+        <!-- 板块5：学礼之智 -->
+        <section class="slider-section">
+            <div class="scroll-container">
+                <div class="scroll-ends">
+                    <div class="scroll-end"></div>
+                    <div class="scroll-end"></div>
+                </div>
+                <div class="scroll-bg">
+                    <h1 class="main-title">学礼之智</h1>
+                </div>
+                <button class="enter-btn">体验学礼</button>
+            </div>
+
+            <div class="intro-card">
+                <h2 class="card-title">学礼介绍</h2>
+                <div class="card-content">
+                    <p>学礼是古代士人求学受教的礼仪，是开启知识与德行之路的重要仪式。学礼注重尊师重道，强调“博学于文，约之以礼”的治学理念。</p>
+                    <p>学礼包括拜师礼、束脩之礼、释奠礼等环节，通过礼仪规范求学行为，培养士人谦逊好学、尊师敬道的品格。</p>
+                </div>
+            </div>
+
+            <div class="btn-bar">
+                <button class="nav-btn">求学流程</button>
+                <button class="nav-btn">师道文化</button>
+                <button class="nav-btn">经典典籍</button>
+            </div>
+
+        </section>
+
+        <!-- 板块6：乡饮酒礼之和 -->
+        <section class="slider-section">
+            <div class="scroll-container">
+                <div class="scroll-ends">
+                    <div class="scroll-end"></div>
+                    <div class="scroll-end"></div>
+                </div>
+                <div class="scroll-bg">
+                    <h1 class="main-title">乡饮酒礼之和</h1>
+                </div>
+                <button class="enter-btn">体验乡饮酒礼</button>
+            </div>
+
+            <div class="intro-card">
+                <h2 class="card-title">乡饮酒礼介绍</h2>
+                <div class="card-content">
+                    <p>乡饮酒礼是古代乡里间举行的宴饮礼仪，旨在明长幼之序、敦睦邻里关系，是维系地方社会和谐的重要仪式。</p>
+                    <p>仪式以尊老敬贤为核心，通过饮酒、奏乐、行礼等环节，彰显“礼之用，和为贵”的理念，强化乡邻间的伦理秩序与情感联结。</p>
+                </div>
+            </div>
+
+            <div class="btn-bar">
+                <button class="nav-btn">礼仪流程</button>
+                <button class="nav-btn">乡邻文化</button>
+                <button class="nav-btn">乐舞展示</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- 滑动指示器 -->
+    <div class="slider-indicator" id="indicator">
+        <div class="indicator-dot active"></div>
+        <div class="indicator-dot"></div>
+        <div class="indicator-dot"></div>
+        <div class="indicator-dot"></div>
+        <div class="indicator-dot"></div>
+        <div class="indicator-dot"></div>
+    </div>
+
+    <script>
+        // 核心变量
+        const sliderContainer = document.getElementById('sliderContainer');
+        const indicatorDots = document.querySelectorAll('.indicator-dot');
+        const sections = document.querySelectorAll('.slider-section');
+        let currentIndex = 0; // 当前板块索引
+        let startX = 0; // 触摸/鼠标起始X坐标
+        let isDragging = false; // 是否正在拖拽
+
+        // 更新滑动位置和指示器
+        function updateSlider(index) {
+            // 限制索引范围
+            if (index < 0) index = 0;
+            if (index >= sections.length) index = sections.length - 1;
+            
+            currentIndex = index;
+            // 移动滑动容器
+            sliderContainer.style.transform = `translateX(-${currentIndex * 100}vw)`;
+            
+            // 更新指示器
+            indicatorDots.forEach((dot, i) => {
+                if (i === currentIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        // 鼠标/触摸事件 - 开始
+        function handleStart(e) {
+            isDragging = true;
+            // 兼容鼠标和触屏
+            startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+        }
+
+        // 鼠标/触摸事件 - 移动（降低阈值到30px）
+        function handleMove(e) {
+            if (!isDragging) return;
+            const moveX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            const diffX = startX - moveX;
+            
+            // 仅在拖拽距离超过30px时触发切换（更灵敏）
+            if (Math.abs(diffX) > 30) {
+                if (diffX > 0) {
+                    // 向左滑 → 下一个板块
+                    updateSlider(currentIndex + 1);
+                } else {
+                    // 向右滑 → 上一个板块
+                    updateSlider(currentIndex - 1);
+                }
+                isDragging = false; // 重置拖拽状态
+            }
+        }
+
+        // 鼠标/触摸事件 - 结束
+        function handleEnd() {
+            isDragging = false;
+        }
+
+        // 绑定鼠标事件
+        sliderContainer.addEventListener('mousedown', handleStart);
+        document.addEventListener('mousemove', handleMove);
+        document.addEventListener('mouseup', handleEnd);
+
+        // 绑定触屏事件（手机端）
+        sliderContainer.addEventListener('touchstart', handleStart);
+        document.addEventListener('touchmove', handleMove);
+        document.addEventListener('touchend', handleEnd);
+
+        // 点击指示器切换板块
+        indicatorDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                updateSlider(index);
+            });
+        });
+
+        // 按钮点击事件（新增跳转功能）
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // 根据按钮文字跳转对应板块
+                const btnText = this.textContent;
+                switch(btnText) {
+                    case '项目介绍':
+                        updateSlider(0); // 跳转到第1板块
+                        break;
+                    case '体验冠礼':
+                        updateSlider(1); // 跳转到第2板块
+                        break;
+                    case '体验婚礼':
+                        updateSlider(2); // 跳转到第3板块
+                        break;
+                    case '体验祭礼':
+                        updateSlider(3); // 跳转到第4板块
+                        break;
+                    case '体验学礼':
+                        updateSlider(4); // 跳转到第5板块
+                        break;
+                    case '体验乡饮酒礼':
+                        updateSlider(5); // 跳转到第6板块
+                        break;
+                    default:
+                        alert(`你点击了【${btnText}】按钮`);
+                }
+            });
+        });
+
+        // enter-btn点击事件
+        document.querySelectorAll('.enter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                alert(`你点击了【${this.textContent}】按钮，即将进入沉浸式体验`);
+            });
+        });
+    </script>
+</body>
+</html>
