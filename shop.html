@@ -13,9 +13,10 @@
             font-family: "Microsoft Yahei", "PingFang SC", sans-serif;
         }
 
-        /* 页面背景 - 可替换background中的图片路径 */
+        /* 页面背景 - 替换为实际背景图路径 */
         body {
-            background: url("./img/mall-bg.jpg") no-repeat fixed center/cover;
+            /* 关键修改：替换背景图路径，建议使用相对路径或绝对URL */
+            background: url("./img/background.png") no-repeat fixed center/cover;
             background-color: #f8f9fa; /* 背景图加载失败时的兜底色 */
             color: #333;
             min-height: 100vh;
@@ -23,7 +24,7 @@
             position: relative;
         }
 
-        /* 背景遮罩层 - 提升文字可读性 */
+        /* 背景遮罩层 - 提升文字可读性（保留，避免背景图干扰文字） */
         body::before {
             content: "";
             position: fixed;
@@ -31,7 +32,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.85);
+            background-color: rgba(255, 255, 255, 0.85); /* 可调整透明度（0-1） */
             z-index: -1;
         }
 
@@ -308,16 +309,16 @@
     <div class="product-container">
         <!-- 商品1 -->
         <div class="product-card" data-product='{
-            "title": "青铜编钟复刻摆件",
-            "img": "./img/product1.jpg",
+            "title": "古乐器元素便签本",
+            "img": "./img/product/1.png",
             "price": "¥199",
             "originalPrice": "¥299",
             "desc": "仿战国曾侯乙编钟迷你复刻版，青铜材质，精美纹饰，适合收藏摆放",
             "detail": "1. 材质：优质青铜铸造，表面做旧处理，还原古编钟质感；2. 尺寸：整体高度约20cm，宽15cm，单个编钟直径3-8cm不等；3. 工艺：失蜡法铸造，手工打磨纹饰，细节精致；4. 配件：含实木底座、收藏证书、防尘罩；5. 适用场景：家居摆件、书房装饰、文化礼品、收藏鉴赏。"
         }'>
-            <img src="./img/product1.jpg" alt="青铜编钟复刻摆件" class="product-img">
+            <img src="./img/product/1.png" alt="古乐器元素便签本" class="product-img">
             <div class="product-info">
-                <h3 class="product-title">青铜编钟复刻摆件</h3>
+                <h3 class="product-title">古乐器元素便签本</h3>
                 <p class="product-desc">仿战国曾侯乙编钟迷你复刻版，青铜材质，精美纹饰，适合收藏摆放</p>
                 <div class="product-price">
                     <div>
