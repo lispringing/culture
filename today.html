@@ -79,23 +79,26 @@
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
         }
 
-        /* 头部标题 */
+        /* 头部标题（改为图片容器） */
         .header {
             margin: 30px 0;
             text-align: center;
             text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
         }
 
-        .header h1 {
-            font-size: 32px;
-            font-weight: 600;
+        /* 手写体标题图片样式 */
+        .title-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 80px; /* 可根据实际图片调整高度 */
             margin-bottom: 8px;
-            color: #1d1d1f;
+            filter: drop-shadow(0 1px 3px rgba(255, 255, 255, 0.8));
         }
 
         .header p {
             font-size: 17px;
             color: #86868b;
+            margin-top: 10px;
         }
 
         /* 文物卡片 */
@@ -227,6 +230,10 @@
             .fortune-title {
                 font-size: 17px;
             }
+
+            .title-img {
+                max-height: 60px; /* 移动端适配图片高度 */
+            }
         }
 
         @media (max-width: 480px) {
@@ -250,8 +257,12 @@
                 height: 220px;
             }
 
-            .header h1 {
-                font-size: 28px;
+            .title-img {
+                max-height: 50px; /* 小屏移动端适配 */
+            }
+
+            .header p {
+                font-size: 15px;
             }
 
             .relic-info {
@@ -292,7 +303,8 @@
     <button class="circle-back-btn" id="circleBackBtn">←</button>
 
     <div class="header">
-        <h1>每日文物</h1>
+        <!-- 替换为手写体图片 -->
+        <img src="./img/today.png" alt="每日文物" class="title-img">
         <p>每日探索一件珍贵文物，感受历史的温度</p>
     </div>
 
