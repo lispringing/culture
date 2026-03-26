@@ -21,6 +21,44 @@
             overflow: hidden; /* 隐藏滚动条 */
         }
 
+        /* 新增：返回按钮样式 */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #8b5a2b;
+            border: 3px solid #5d4037;
+            color: #fff8e8;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #d4af37;
+            color: #3e2723;
+            transform: scale(1.1);
+        }
+
+        /* 响应式适配返回按钮 */
+        @media (max-width: 768px) {
+            .back-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+                top: 15px;
+                left: 15px;
+            }
+        }
+
         /* 滑动容器核心样式 */
         .slider-container {
             width: 100vw;
@@ -276,6 +314,9 @@
     </style>
 </head>
 <body>
+    <!-- 新增：返回按钮 -->
+    <div class="back-btn" id="backBtn">←</div>
+
     <!-- 滑动容器 -->
     <div class="slider-container" id="sliderContainer">
         <!-- 板块1：礼乐人生（原页面） -->
@@ -576,6 +617,12 @@
                 alert(`你点击了【${this.textContent}】按钮，即将进入沉浸式体验`);
             });
         });
+
+                // 圆形返回按钮点击事件
+        document.getElementById('backBtn').addEventListener('click', function() {
+            window.history.back();
+        });
+
     </script>
 </body>
 </html>
