@@ -15,7 +15,6 @@
 
         /* 页面背景 - 替换为实际背景图路径 */
         body {
-            /* 关键修改：替换背景图路径，建议使用相对路径或绝对URL */
             background: url("./img/background.png") no-repeat fixed center/cover;
             background-color: #f8f9fa; /* 背景图加载失败时的兜底色 */
             color: #333;
@@ -24,7 +23,7 @@
             position: relative;
         }
 
-        /* 背景遮罩层 - 提升文字可读性（保留，避免背景图干扰文字） */
+        /* 背景遮罩层 - 提升文字可读性 */
         body::before {
             content: "";
             position: fixed;
@@ -32,7 +31,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.85); /* 可调整透明度（0-1） */
+            background-color: rgba(255, 255, 255, 0.85);
             z-index: -1;
         }
 
@@ -137,6 +136,44 @@
             margin-left: 5px;
         }
 
+        /* 新增购买按钮样式 */
+        .buy-btn {
+            width: 100%;
+            padding: 8px 0;
+            margin-top: 12px;
+            background-color: #e63946;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .buy-btn:hover {
+            background-color: #d12f3c;
+        }
+
+        /* 弹窗内购买按钮样式 */
+        .modal-buy-btn {
+            width: 100%;
+            padding: 12px 0;
+            margin-top: 20px;
+            background-color: #e63946;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-buy-btn:hover {
+            background-color: #d12f3c;
+        }
+
         /* 商品详情弹窗样式 */
         .modal {
             position: fixed;
@@ -237,6 +274,7 @@
             font-size: 14px;
             color: #888;
             line-height: 1.6;
+            margin-bottom: 20px;
         }
 
         /* 响应式适配 - 移动端 */
@@ -298,6 +336,11 @@
             .modal-content {
                 padding: 20px 15px;
             }
+
+            .buy-btn {
+                padding: 6px 0;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -307,135 +350,72 @@
 
     <!-- 商品列表 -->
     <div class="product-container">
-        <!-- 商品1 -->
+        <!-- 商品1 - 古乐器元素便签本 -->
         <div class="product-card" data-product='{
             "title": "古乐器元素便签本",
             "img": "./img/product/1.png",
-            "price": "¥199",
-            "originalPrice": "¥299",
-            "desc": "仿战国曾侯乙编钟迷你复刻版，青铜材质，精美纹饰，适合收藏摆放",
-            "detail": "1. 材质：优质青铜铸造，表面做旧处理，还原古编钟质感；2. 尺寸：整体高度约20cm，宽15cm，单个编钟直径3-8cm不等；3. 工艺：失蜡法铸造，手工打磨纹饰，细节精致；4. 配件：含实木底座、收藏证书、防尘罩；5. 适用场景：家居摆件、书房装饰、文化礼品、收藏鉴赏。"
+            "price": "¥29.9",
+            "originalPrice": "¥49.9",
+            "desc": "以曾侯乙编钟为设计灵感的便签本，复古纹样，便携实用，文创小物",
+            "detail": "1. 材质：优质牛皮纸封面+米黄内页，质感佳；2. 尺寸：10cm×15cm，便携口袋款；3. 设计：封面烫金编钟纹样，内页带古乐器插画；4. 页数：80张/本，可撕设计；5. 适用场景：日常记录、学生文具、文创礼品、办公使用。"
         }'>
             <img src="./img/product/1.png" alt="古乐器元素便签本" class="product-img">
             <div class="product-info">
                 <h3 class="product-title">古乐器元素便签本</h3>
-                <p class="product-desc">仿战国曾侯乙编钟迷你复刻版，青铜材质，精美纹饰，适合收藏摆放</p>
+                <p class="product-desc">以曾侯乙编钟为设计灵感的便签本，复古纹样，便携实用，文创小物</p>
                 <div class="product-price">
                     <div>
-                        <span class="price">¥199</span>
-                        <span class="original-price">¥299</span>
+                        <span class="price">¥29.9</span>
+                        <span class="original-price">¥49.9</span>
                     </div>
                 </div>
+                <button class="buy-btn">立即购买</button>
             </div>
         </div>
 
-        <!-- 商品2 -->
+        <!-- 商品2 - 礼乐文化印章套装 -->
         <div class="product-card" data-product='{
             "title": "礼乐文化印章套装",
             "img": "./img/product/2.png",
-            "price": "¥59",
-            "originalPrice": "¥89",
-            "desc": "精选山东汉画像石乐舞图案，黄铜材质镀金，一套6枚，文创礼品首选",
-            "detail": "1. 材质：H62黄铜镀金，抗氧化处理，经久耐用；2. 规格：单枚书签长12cm，宽1.5cm，厚度0.3mm；3. 图案：精选山东汉画像石经典乐舞、车马、宴饮等6种图案；4. 工艺：激光雕刻，镂空设计，边缘抛光；5. 包装：精美礼盒包装，配手提袋，适合送礼；6. 适用场景：阅读标记、文创收藏、商务礼品、学生奖品。"
+            "price": "¥39.9",
+            "originalPrice": "¥69.9",
+            "desc": "山东汉画像石乐舞主题印章，6枚装，黄铜材质，可定制刻字，文创礼品",
+            "detail": "1. 材质：黄铜材质，耐磨不易氧化；2. 规格：单枚印章直径2cm，高度6cm；3. 图案：精选汉画像石乐舞、宴饮等6种传统纹样；4. 工艺：激光雕刻，字迹清晰，手感厚重；5. 包装：精美礼盒包装，配印泥；6. 适用场景：书法篆刻、文创收藏、伴手礼、学生奖品。"
         }'>
-            <img src="./img/product/2.png" alt="汉画像石主题书签" class="product-img">
+            <img src="./img/product/2.png" alt="礼乐文化印章套装" class="product-img">
             <div class="product-info">
                 <h3 class="product-title">礼乐文化印章套装</h3>
-                <p class="product-desc">精选山东汉画像石乐舞图案，黄铜材质镀金，一套6枚，文创礼品首选</p>
+                <p class="product-desc">山东汉画像石乐舞主题印章，6枚装，黄铜材质，可定制刻字，文创礼品</p>
                 <div class="product-price">
                     <div>
-                        <span class="price">¥59</span>
-                        <span class="original-price">¥89</span>
+                        <span class="price">¥39.9</span>
+                        <span class="original-price">¥69.9</span>
                     </div>
                 </div>
+                <button class="buy-btn">立即购买</button>
             </div>
         </div>
 
-        <!-- 商品3 -->
+        <!-- 商品3 - 青铜雅韵文件夹 -->
         <div class="product-card" data-product='{
             "title": "青铜雅韵文件夹",
             "img": "./img/product/3.png",
-            "price": "¥129",
-            "originalPrice": "¥169",
-            "desc": "仿仰韶文化陶埙复刻，可吹奏，配实木底座，传统文化艺术摆件",
-            "detail": "1. 材质：高温陶土，手工捏制，低温烧制；2. 规格：埙体直径约8cm，高度约10cm，8孔设计；3. 工艺：手工雕刻纹饰，自然窑变釉色，每款独一无二；4. 配件：实木底座、吹奏教程、锦盒包装；5. 音质：音准准确，音色浑厚，适合初学和摆件两用；6. 保养：避免摔落、避免长时间接触水，用干布擦拭即可。"
+            "price": "¥19.9",
+            "originalPrice": "¥39.9",
+            "desc": "仿青铜纹样设计文件夹，防水耐磨，A4尺寸，办公收纳文创用品",
+            "detail": "1. 材质：加厚PP材质，防水防撕裂；2. 规格：A4标准尺寸，可容纳50张A4纸；3. 设计：封面仿青铜编钟纹样，烫金工艺；4. 功能：带分类标签，侧边插袋设计；5. 颜色：复古青铜色，质感高级；6. 适用场景：办公收纳、学生整理、文创收藏。"
         }'>
-            <img src="./img/product3.jpg" alt="陶埙文创摆件" class="product-img">
+            <img src="./img/product/3.png" alt="青铜雅韵文件夹" class="product-img">
             <div class="product-info">
-                <h3 class="product-title">陶埙文创摆件</h3>
-                <p class="product-desc">仿仰韶文化陶埙复刻，可吹奏，配实木底座，传统文化艺术摆件</p>
+                <h3 class="product-title">青铜雅韵文件夹</h3>
+                <p class="product-desc">仿青铜纹样设计文件夹，防水耐磨，A4尺寸，办公收纳文创用品</p>
                 <div class="product-price">
                     <div>
-                        <span class="price">¥129</span>
-                        <span class="original-price">¥169</span>
+                        <span class="price">¥19.9</span>
+                        <span class="original-price">¥39.9</span>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- 商品4 -->
-        <div class="product-card" data-product='{
-            "title": "齐鲁礼乐主题帆布包",
-            "img": "./img/product4.jpg",
-            "price": "¥79",
-            "originalPrice": "¥99",
-            "desc": "纯棉帆布材质，原创礼乐图案设计，大容量，耐磨耐用，文艺通勤",
-            "detail": "1. 材质：16安纯棉帆布，加厚耐磨，环保染色；2. 规格：长40cm，高35cm，侧宽10cm，肩带长120cm（可调节）；3. 工艺：丝网印刷，图案清晰，不易掉色；4. 设计：原创齐鲁礼乐图案，内贴口袋，加固缝线；5. 功能：大容量，可放14寸笔记本电脑，适合通勤、购物、出游；6. 洗涤：建议手洗，阴干，不可暴晒，不可漂白。"
-        }'>
-            <img src="./img/product4.jpg" alt="齐鲁礼乐主题帆布包" class="product-img">
-            <div class="product-info">
-                <h3 class="product-title">齐鲁礼乐主题帆布包</h3>
-                <p class="product-desc">纯棉帆布材质，原创礼乐图案设计，大容量，耐磨耐用，文艺通勤</p>
-                <div class="product-price">
-                    <div>
-                        <span class="price">¥79</span>
-                        <span class="original-price">¥99</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 商品5 -->
-        <div class="product-card" data-product='{
-            "title": "玉磬纹样陶瓷杯",
-            "img": "./img/product5.jpg",
-            "price": "¥89",
-            "originalPrice": "¥129",
-            "desc": "高温白瓷材质，手绘玉磬传统纹样，带盖防烫，办公家用皆宜",
-            "detail": "1. 材质：高白瓷，1380℃高温烧制，无铅无镉，健康安全；2. 规格：容量450ml，杯高12cm，口径8cm，带硅胶隔热套；3. 工艺：手工绘制玉磬传统纹样，釉上彩工艺，色彩鲜艳；4. 设计：带防尘盖，杯底防滑设计，杯身流线型握感舒适；5. 功能：适合装热水、茶、咖啡等，办公家用均可；6. 保养：可微波炉加热，不可明火直烧，建议手洗。"
-        }'>
-            <img src="./img/product5.jpg" alt="玉磬纹样陶瓷杯" class="product-img">
-            <div class="product-info">
-                <h3 class="product-title">玉磬纹样陶瓷杯</h3>
-                <p class="product-desc">高温白瓷材质，手绘玉磬传统纹样，带盖防烫，办公家用皆宜</p>
-                <div class="product-price">
-                    <div>
-                        <span class="price">¥89</span>
-                        <span class="original-price">¥129</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 商品6 -->
-        <div class="product-card" data-product='{
-            "title": "礼乐齐鲁礼盒套装",
-            "img": "./img/product6.jpg",
-            "price": "¥399",
-            "originalPrice": "¥599",
-            "desc": "含书签、笔记本、陶瓷杯、帆布包，全套礼乐主题设计，高端礼品",
-            "detail": "1. 包含单品：汉画像石书签6枚、礼乐主题笔记本1本、玉磬纹样陶瓷杯1个、齐鲁礼乐帆布包1个；2. 材质：各单品保持原有优质材质，礼盒为硬纸板覆特种纸；3. 规格：礼盒尺寸45*30*15cm，手提式设计，送礼大气；4. 工艺：全套统一礼乐主题设计，细节精致，品质把控严格；5. 适用场景：商务礼品、文化交流礼品、企业伴手礼、节日送礼；6. 定制：支持企业LOGO定制（需提前沟通）。"
-        }'>
-            <img src="./img/product6.jpg" alt="礼乐齐鲁礼盒套装" class="product-img">
-            <div class="product-info">
-                <h3 class="product-title">礼乐齐鲁礼盒套装</h3>
-                <p class="product-desc">含书签、笔记本、陶瓷杯、帆布包，全套礼乐主题设计，高端礼品</p>
-                <div class="product-price">
-                    <div>
-                        <span class="price">¥399</span>
-                        <span class="original-price">¥599</span>
-                    </div>
-                </div>
+                <button class="buy-btn">立即购买</button>
             </div>
         </div>
     </div>
@@ -452,17 +432,29 @@
             </div>
             <div class="modal-product-desc"></div>
             <div class="modal-product-detail"></div>
+            <button class="modal-buy-btn">立即购买</button>
         </div>
     </div>
 
     <script>
-        // 返回按钮点击事件（可根据需求修改跳转逻辑）
+        // 返回按钮点击事件
         const backBtn = document.querySelector('.back-btn');
         backBtn.addEventListener('click', () => {
-            // 此处可修改为实际返回逻辑，比如返回上一页
             window.history.back();
-            // 如果是静态页面测试，可注释上面一行，打开下面的提示
-            // alert('返回按钮被点击');
+        });
+
+        // 缺货提示函数
+        function showStockOutTip() {
+            alert('抱歉，该商品暂时缺货，敬请期待！');
+        }
+
+        // 绑定所有购买按钮的点击事件
+        const allBuyBtns = document.querySelectorAll('.buy-btn, .modal-buy-btn');
+        allBuyBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // 阻止冒泡（避免触发商品弹窗打开）
+                showStockOutTip();
+            });
         });
 
         // 商品详情弹窗相关
@@ -487,7 +479,6 @@
                 
                 // 显示弹窗
                 modal.classList.add('active');
-                // 禁止页面滚动
                 document.body.style.overflow = 'hidden';
             });
         });
@@ -495,20 +486,15 @@
         // 关闭弹窗
         function closeModal() {
             modal.classList.remove('active');
-            // 恢复页面滚动
             document.body.style.overflow = '';
         }
 
         closeModalBtn.addEventListener('click', closeModal);
-
-        // 点击弹窗外层关闭弹窗
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 closeModal();
             }
         });
-
-        // 按ESC键关闭弹窗
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && modal.classList.contains('active')) {
                 closeModal();
