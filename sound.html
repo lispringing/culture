@@ -2,7 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>仿古交互式编钟</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仿古交互式编钟 | iOS风格</title>
     <style>
         * {
             margin: 0;
@@ -15,44 +16,73 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #2c1f15;
+            background: #f5f5f7; /* iOS经典浅灰背景 */
             flex-direction: column;
-            font-family: "Microsoft YaHei", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", sans-serif; /* iOS系统字体 */
+            padding: 20px;
         }
 
         .title {
-            color: #d4af37;
-            font-size: 28px;
-            margin-bottom: 30px;
+            color: #1d1d1f; /* iOS深色文字 */
+            font-size: clamp(20px, 5vw, 32px); /* 响应式字体 */
+            margin-bottom: clamp(20px, 4vw, 40px);
+            font-weight: 600;
+            letter-spacing: -0.5px; /* iOS字体间距风格 */
         }
 
-        /* 编钟排列 */
+        /* 编钟排列 - 响应式布局 */
         .chime-group {
             display: flex;
-            gap: 20px;
+            gap: clamp(8px, 2vw, 15px);
             align-items: flex-end;
+            width: 100%;
+            max-width: 800px; /* PC端最大宽度 */
+            overflow-x: auto; /* 移动端横向滚动 */
+            padding-bottom: 10px;
+            scrollbar-width: none; /* 隐藏滚动条（Firefox） */
         }
 
-        /* 单个编钟容器（放你的图片） */
+        /* 隐藏滚动条（Chrome/Safari） */
+        .chime-group::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 单个编钟容器 - 从左到右大小递减 */
         .chime {
             position: relative;
-            width: 80px;       /* 你可以改大小 */
-            height: auto;
+            height: clamp(80px, 20vw, 180px); /* 基础高度 */
             cursor: pointer;
-            transition: transform 0.15s ease;
+            transition: all 0.15s ease;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.1)); /* iOS轻量阴影 */
+            flex-shrink: 0; /* 防止压缩 */
         }
 
-        /* 你的编钟图片 */
+        /* 9个编钟尺寸渐变（从左到右依次减小） */
+        .chime:nth-child(1) { width: clamp(70px, 18vw, 160px); }
+        .chime:nth-child(2) { width: clamp(65px, 17vw, 150px); }
+        .chime:nth-child(3) { width: clamp(60px, 16vw, 140px); }
+        .chime:nth-child(4) { width: clamp(55px, 15vw, 130px); }
+        .chime:nth-child(5) { width: clamp(50px, 14vw, 120px); }
+        .chime:nth-child(6) { width: clamp(45px, 13vw, 110px); }
+        .chime:nth-child(7) { width: clamp(40px, 12vw, 100px); }
+        .chime:nth-child(8) { width: clamp(35px, 11vw, 90px); }
+        .chime:nth-child(9) { width: clamp(30px, 10vw, 80px); }
+
+        /* 编钟图片 */
         .chime img {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: contain; /* 保持图片比例 */
             display: block;
+            border-radius: 8px; /* iOS圆角风格 */
+            background: linear-gradient(135deg, #fefefe, #f0f0f2); /* iOS渐变背景 */
+            padding: 5px;
         }
 
-        /* 敲击动画：轻轻晃动 */
+        /* 敲击动画：iOS风格的轻量反馈 */
         .chime.ring {
-            transform: translateY(-6px) scale(1.05);
-            filter: brightness(1.3);
+            transform: translateY(-6px) scale(1.03);
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15)) brightness(1.05);
         }
 
         /* 正面点击区（上半部分） */
@@ -63,6 +93,8 @@
             width: 100%;
             height: 65%;
             z-index: 10;
+            /* 点击反馈优化 */
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* 侧面点击区（下半部分） */
@@ -73,12 +105,25 @@
             width: 100%;
             height: 35%;
             z-index: 10;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .tips {
-            color: #ccc;
-            margin-top: 30px;
-            font-size: 14px;
+            color: #86868b; /* iOS次要文字颜色 */
+            margin-top: clamp(20px, 4vw, 30px);
+            font-size: clamp(12px, 2vw, 14px);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* iOS风格按钮触感优化（移动端） */
+        @media (max-width: 768px) {
+            .chime {
+                cursor: pointer;
+            }
+            .hit-area-front, .hit-area-side {
+                touch-action: manipulation; /* 防止双击缩放 */
+            }
         }
     </style>
 </head>
@@ -86,57 +131,73 @@
     <h1 class="title">🏮 仿古交互式编钟 🏮</h1>
 
     <div class="chime-group">
-        <!-- 1 号编钟 -->
+        <!-- 1 号编钟（最大） -->
         <div class="chime">
-            <img src="./img/sound.png" alt="编钟">
+            <img src="./img/sound.png" alt="编钟1">
             <div class="hit-area-front" data-index="0"></div>
             <div class="hit-area-side" data-index="0"></div>
         </div>
-
         <!-- 2 号编钟 -->
         <div class="chime">
-            <img src="你的编钟图片2.png" alt="编钟">
+            <img src="./img/sound.png" alt="编钟2">
             <div class="hit-area-front" data-index="1"></div>
             <div class="hit-area-side" data-index="1"></div>
         </div>
-
         <!-- 3 号编钟 -->
         <div class="chime">
-            <img src="你的编钟图片3.png" alt="编钟">
+            <img src="./img/sound.png" alt="编钟3">
             <div class="hit-area-front" data-index="2"></div>
             <div class="hit-area-side" data-index="2"></div>
         </div>
-
         <!-- 4 号编钟 -->
         <div class="chime">
-            <img src="你的编钟图片4.png" alt="编钟">
+            <img src="./img/sound.png" alt="编钟4">
             <div class="hit-area-front" data-index="3"></div>
             <div class="hit-area-side" data-index="3"></div>
         </div>
-
         <!-- 5 号编钟 -->
         <div class="chime">
-            <img src="你的编钟图片5.png" alt="编钟">
+            <img src="./img/sound.png" alt="编钟5">
             <div class="hit-area-front" data-index="4"></div>
             <div class="hit-area-side" data-index="4"></div>
         </div>
-
         <!-- 6 号编钟 -->
         <div class="chime">
-            <img src="你的编钟图片6.png" alt="编钟">
+            <img src="./img/sound.png" alt="编钟6">
             <div class="hit-area-front" data-index="5"></div>
             <div class="hit-area-side" data-index="5"></div>
         </div>
+        <!-- 7 号编钟 -->
+        <div class="chime">
+            <img src="./img/sound.png" alt="编钟7">
+            <div class="hit-area-front" data-index="6"></div>
+            <div class="hit-area-side" data-index="6"></div>
+        </div>
+        <!-- 8 号编钟 -->
+        <div class="chime">
+            <img src="./img/sound.png" alt="编钟8">
+            <div class="hit-area-front" data-index="7"></div>
+            <div class="hit-area-side" data-index="7"></div>
+        </div>
+        <!-- 9 号编钟（最小） -->
+        <div class="chime">
+            <img src="./img/sound.png" alt="编钟9">
+            <div class="hit-area-front" data-index="8"></div>
+            <div class="hit-area-side" data-index="8"></div>
+        </div>
     </div>
 
-    <p class="tips">👉 点击编钟上半部分 / 下半部分 发出不同声音</p>
+    <p class="tips">👉 点击编钟上半部分 / 下半部分 发出不同声音<br>📱 支持移动端触摸操作</p>
 
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+        // 9个编钟的基础频率（扩展到9个音）
+        const baseFreq = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 587.33];
+
         // 播放：上半部分=高音，下半部分=低音
         function playChime(index, isFront) {
-            const baseFreq = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00];
+            if (index >= baseFreq.length) return; // 防越界
             let freq = baseFreq[index];
             if (!isFront) freq *= 0.85; // 下半部分降调
 
@@ -146,7 +207,8 @@
             oscillator.type = "sine";
             oscillator.frequency.value = freq;
 
-            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            // iOS风格的音量渐变（更柔和）
+            gainNode.gain.setValueAtTime(0.25, audioCtx.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
 
             oscillator.connect(gainNode);
@@ -156,24 +218,57 @@
             oscillator.stop(audioCtx.currentTime + 1.2);
         }
 
-        // 绑定点击
-        document.querySelectorAll(".hit-area-front").forEach(el => {
-            el.addEventListener("click", () => {
-                const index = el.dataset.index;
-                playChime(index, true);
-                el.closest(".chime").classList.add("ring");
-                setTimeout(() => el.closest(".chime").classList.remove("ring"), 150);
+        // 绑定点击/触摸事件
+        function bindChimeEvents() {
+            // 上半部分点击
+            document.querySelectorAll(".hit-area-front").forEach(el => {
+                el.addEventListener("click", () => {
+                    const index = el.dataset.index;
+                    playChime(index, true);
+                    triggerRingAnimation(el);
+                });
+                // 移动端触摸事件
+                el.addEventListener("touchstart", (e) => {
+                    e.preventDefault(); // 防止默认触摸行为
+                    const index = el.dataset.index;
+                    playChime(index, true);
+                    triggerRingAnimation(el);
+                });
             });
-        });
 
-        document.querySelectorAll(".hit-area-side").forEach(el => {
-            el.addEventListener("click", () => {
-                const index = el.dataset.index;
-                playChime(index, false);
-                el.closest(".chime").classList.add("ring");
-                setTimeout(() => el.closest(".chime").classList.remove("ring"), 150);
+            // 下半部分点击
+            document.querySelectorAll(".hit-area-side").forEach(el => {
+                el.addEventListener("click", () => {
+                    const index = el.dataset.index;
+                    playChime(index, false);
+                    triggerRingAnimation(el);
+                });
+                // 移动端触摸事件
+                el.addEventListener("touchstart", (e) => {
+                    e.preventDefault(); // 防止默认触摸行为
+                    const index = el.dataset.index;
+                    playChime(index, false);
+                    triggerRingAnimation(el);
+                });
             });
-        });
+        }
+
+        // 触发编钟动画
+        function triggerRingAnimation(el) {
+            const chimeEl = el.closest(".chime");
+            chimeEl.classList.add("ring");
+            setTimeout(() => chimeEl.classList.remove("ring"), 150);
+        }
+
+        // 页面加载完成后绑定事件
+        document.addEventListener("DOMContentLoaded", bindChimeEvents);
+
+        // 移动端唤醒AudioContext（解决iOS静音问题）
+        document.addEventListener("touchstart", () => {
+            if (audioCtx.state === "suspended") {
+                audioCtx.resume();
+            }
+        }, { once: true });
     </script>
 </body>
 </html>
