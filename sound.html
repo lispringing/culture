@@ -8,7 +8,7 @@
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box; /* 修正原代码的拼写错误 box-box-sizing */
+            box-sizing: border-box;
         }
 
         /* ———— 按钮容器样式 ———— */
@@ -21,7 +21,7 @@
             justify-content: space-between;
             padding: 0 20px;
             z-index: 100;
-            pointer-events: none; /* 防止容器遮挡其他元素点击 */
+            pointer-events: none;
         }
 
         /* ———— 返回主页按钮 (圆形) ———— */
@@ -81,13 +81,12 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* 改为向上对齐，让编钟整体上移 */
             flex-direction: column;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", sans-serif;
             padding: 20px;
-            padding-top: clamp(80px, 15vw, 100px); /* 为顶部按钮留出空间 */
+            padding-top: clamp(80px, 15vw, 100px);
             
-            /* 在这里替换你的自定义背景图 */
             background-image: url("https://culture.springing.top/img/background.png");
             background-size: cover;
             background-position: center;
@@ -102,25 +101,60 @@
             font-weight: 600;
             letter-spacing: -0.5px;
             text-shadow: 0 1px 3px rgba(255,255,255,0.8);
-        }
-
-        /* ———— 核心布局：电脑端一字排开 / 手机端滑动 ———— */
-        .chime-group {
-            display: flex;
-            gap: clamp(10px, 3vw, 20px);
-            align-items: flex-end;
+            text-align: center;
             width: 100%;
-            max-width: 1200px;
-            overflow-x: auto;
-            padding: 10px 5px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            justify-content: flex-start;
         }
 
-        .chime-group::-webkit-scrollbar {
-            display: none;
-        }
+      /* ———— 核心布局：电脑端一字排开 / 手机端滑动 ———— */
+.chime-group {
+    display: flex;
+    gap: clamp(10px, 3vw, 20px);
+    align-items: flex-end;
+    width: 100%;
+    max-width: 1200px;
+    overflow-x: auto;
+    padding: 10px clamp(20px, 4vw, 30px); /* 统一内边距基准 */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    justify-content: flex-start;
+    margin-bottom: clamp(40px, 8vw, 60px);
+    margin-left: auto; /* 水平居中 */
+    margin-right: auto; /* 水平居中 */
+}
+
+/* ———— 乐谱模块样式 ———— */
+.music-score {
+    width: 100%;
+    max-width: 1200px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    padding: clamp(20px, 4vw, 30px) clamp(20px, 4vw, 30px); /* 统一内边距基准 */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin: 0 auto;
+    margin-bottom: clamp(20px, 4vw, 30px);
+}
+
+/* 移动端触摸优化 */
+@media (max-width: 768px) {
+    .btn-container {
+        padding: 0 15px;
+        top: 15px;
+    }
+    body {
+        padding-top: clamp(70px, 12vw, 90px);
+    }
+    .score-container {
+        min-height: 60px;
+    }
+    /* 移动端统一内边距 */
+    .chime-group {
+        padding: 10px 15px;
+    }
+    .music-score {
+        padding: clamp(15px, 3vw, 20px) 15px;
+    }
+}
 
         /* 编钟大小：从左到右依次减小 */
         .chime {
@@ -174,7 +208,7 @@
 
         .tips {
             color: #333;
-            margin-top: 25px;
+            margin-top: 10px;
             font-size: clamp(13px, 2.5vw, 15px);
             text-align: center;
             line-height: 1.6;
@@ -182,6 +216,99 @@
             padding: 10px 16px;
             border-radius: 12px;
             backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ———— 乐谱模块样式 ———— */
+        .music-score {
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: clamp(20px, 4vw, 30px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin: 0 auto;
+            margin-bottom: clamp(20px, 4vw, 30px);
+        }
+
+        .score-title {
+            font-size: clamp(16px, 3vw, 20px);
+            color: #1d1d1f;
+            font-weight: 600;
+            margin-bottom: clamp(15px, 3vw, 20px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .clear-score-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: #ff7e5f;
+            color: white;
+            border: none;
+            font-size: clamp(12px, 2vw, 14px);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .clear-score-btn:hover {
+            background: #ff6b48;
+        }
+
+        .score-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(8px, 2vw, 12px);
+            min-height: 80px;
+            padding: clamp(15px, 3vw, 20px);
+            background: rgba(248, 248, 250, 0.9);
+            border-radius: 12px;
+            align-items: center;
+        }
+
+        .note {
+            padding: clamp(8px, 2vw, 12px) clamp(12px, 2.5vw, 16px);
+            border-radius: 8px;
+            background: linear-gradient(135deg, #feb47b, #ff7e5f);
+            color: white;
+            font-size: clamp(14px, 2.5vw, 16px);
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: noteAppear 0.3s ease forwards;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .note-side {
+            background: linear-gradient(135deg, #7b93ff, #5f86fe);
+        }
+
+        @keyframes noteAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .note-index {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .empty-score {
+            color: #999;
+            font-size: clamp(14px, 2.5vw, 16px);
+            text-align: center;
+            width: 100%;
+            padding: 20px 0;
         }
 
         /* 移动端触摸优化 */
@@ -193,10 +320,13 @@
             body {
                 padding-top: clamp(70px, 12vw, 90px);
             }
+            .score-container {
+                min-height: 60px;
+            }
         }
 
         /* 防止按钮被选中 */
-        .back-home-btn, .personality-test-btn {
+        .back-home-btn, .personality-test-btn, .clear-score-btn {
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -218,7 +348,7 @@
         <button class="personality-test-btn" id="personalityTestBtn">个性测试</button>
     </div>
 
-    <h1 class="title">🏮 仿古交互式编钟 🏮</h1>
+    <h1 class="title">个性之声</h1>
 
     <div class="chime-group">
         <div class="chime"><img src="./img/sound.png" alt="编钟"><div class="hit-area-front" data-index="0"></div><div class="hit-area-side" data-index="0"></div></div>
@@ -232,40 +362,99 @@
         <div class="chime"><img src="./img/sound.png" alt="编钟"><div class="hit-area-front" data-index="8"></div><div class="hit-area-side" data-index="8"></div></div>
     </div>
 
-    <p class="tips">👉 点击编钟上/下部分发出不同音色<br>🖱️ 电脑端滚轮滑动 / 📱 手机端左右滑动</p>
+    <!-- 乐谱模块 -->
+    <div class="music-score">
+        <div class="score-title">
+            <span>我的自定义乐谱</span>
+            <button class="clear-score-btn" id="clearScoreBtn">清空乐谱</button>
+        </div>
+        <div class="score-container" id="scoreContainer">
+            <div class="empty-score">点击编钟开始创作你的乐谱吧</div>
+        </div>
+    </div>
+
+    <p class="tips">点击编钟上/下部分发出不同音色<br></p>
 
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const baseFreq = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 587.33];
+        // 音符名称对应表（C4到D5）
+        const noteNames = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5'];
         const chimeGroup = document.querySelector('.chime-group');
+        const scoreContainer = document.getElementById('scoreContainer');
+        let scoreNotes = []; // 存储乐谱音符
 
         // ==============================================
         // 按钮点击事件
         // ==============================================
-        // 返回主页按钮 - 请替换为实际的主页URL
+        // 返回主页按钮
         document.getElementById('backHomeBtn').addEventListener('click', function() {
-            window.location.href = '/'; // 替换为你的主页地址
+            window.location.href = '/';
         });
 
-        // 个性测试按钮 - 请替换为实际的测试页面URL
+        // 个性测试按钮
         document.getElementById('personalityTestBtn').addEventListener('click', function() {
-            // window.location.href = '/personality-test'; // 替换为你的测试页面地址
-            alert('个性测试按钮被点击'); // 测试用，实际使用时删除
+            window.location.href = '/test.html';
+        });
+
+        // 清空乐谱按钮
+        document.getElementById('clearScoreBtn').addEventListener('click', function() {
+            scoreNotes = [];
+            renderScore();
         });
 
         // ==============================================
-        // 【稳定版】鼠标滚轮 → 左右滑动（全浏览器可用）
+        // 滚轮滑动事件
         // ==============================================
         chimeGroup.addEventListener('wheel', function(e) {
             e.preventDefault();
-            // 滚轮上下 → 控制左右滑动速度流畅
             this.scrollTo({
                 left: this.scrollLeft + e.deltaY * 3,
                 behavior: 'smooth'
             });
         });
 
+        // ==============================================
+        // 乐谱渲染函数
+        // ==============================================
+        function renderScore() {
+            if (scoreNotes.length === 0) {
+                scoreContainer.innerHTML = '<div class="empty-score">点击编钟开始创作你的乐谱</div>';
+                return;
+            }
+
+            scoreContainer.innerHTML = '';
+            scoreNotes.forEach((note, index) => {
+                const noteEl = document.createElement('div');
+                noteEl.className = `note ${note.isSide ? 'note-side' : ''}`;
+                noteEl.innerHTML = `
+                    <span>${note.name}</span>
+                    <span class="note-index">${note.index+1}${note.isSide ? '(侧)' : '(正)'}</span>
+                `;
+                // 设置动画延迟，让音符依次出现
+                noteEl.style.animationDelay = `${index * 0.05}s`;
+                scoreContainer.appendChild(noteEl);
+            });
+        }
+
+        // ==============================================
+        // 添加音符到乐谱
+        // ==============================================
+        function addNoteToScore(index, isFront) {
+            const noteName = noteNames[index];
+            // 添加到乐谱数组
+            scoreNotes.push({
+                index: index,
+                name: noteName,
+                isSide: !isFront
+            });
+            // 渲染乐谱
+            renderScore();
+        }
+
+        // ==============================================
         // 播放音效
+        // ==============================================
         function playChime(index, isFront) {
             if (index >= baseFreq.length) return;
             let freq = baseFreq[index];
@@ -286,7 +475,9 @@
             oscillator.stop(audioCtx.currentTime + 1.3);
         }
 
-        // 绑定点击事件
+        // ==============================================
+        // 绑定编钟事件
+        // ==============================================
         function bindChimeEvents() {
             document.querySelectorAll(".hit-area-front").forEach(el => {
                 el.addEventListener("click", () => play(el, true));
@@ -299,19 +490,28 @@
         }
 
         function play(el, isFront) {
-            const index = el.dataset.index;
+            const index = parseInt(el.dataset.index);
             playChime(index, isFront);
             triggerRingAnimation(el);
+            addNoteToScore(index, isFront); // 添加音符到乐谱
         }
 
+        // ==============================================
         // 敲击动画
+        // ==============================================
         function triggerRingAnimation(el) {
             const chime = el.closest(".chime");
             chime.classList.add("ring");
             setTimeout(() => chime.classList.remove("ring"), 160);
         }
 
-        document.addEventListener("DOMContentLoaded", bindChimeEvents);
+        // ==============================================
+        // 初始化
+        // ==============================================
+        document.addEventListener("DOMContentLoaded", () => {
+            bindChimeEvents();
+            renderScore();
+        });
         document.addEventListener("touchstart", () => audioCtx.state === "suspended" && audioCtx.resume(), { once: true });
     </script>
 </body>
