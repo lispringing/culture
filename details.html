@@ -574,11 +574,54 @@
                 font-size: 0.85rem;
             }
         }
+        /* 右上角壁画按钮 */
+.mural-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background-color: #1d1d1f;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+.mural-btn:hover {
+    background-color: #3a3a3a;
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+    .mural-btn {
+        width: 3rem;
+        height: 3rem;
+        font-size: 0.9rem;
+    }
+}
+@media (max-width: 576px) {
+    .mural-btn {
+        top: 0.8rem;
+        right: 0.8rem;
+        width: 2.8rem;
+        height: 2.8rem;
+        font-size: 0.85rem;
+    }
+}
     </style>
 </head>
 <body>
     <!-- 独立圆形返回按钮 -->
     <button class="back-btn" onclick="window.history.back()">←</button>
+    <button class="mural-btn" onclick="window.location.href='https://culture.springing.top/bihua/index.html'">壁画</button>
 
     <!-- 页面标题 -->
     <header class="page-header">

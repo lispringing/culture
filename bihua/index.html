@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>泰山天贶殿回銮图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        .mural-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .bg-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mural-bg {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            user-select: none;
+            position: relative;
+        }
+
+        .character {
+            position: absolute;
+            transform-origin: center bottom;
+            user-select: none;
+            pointer-events: auto;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            transition: transform 0.2s ease;
+        }
+
+        .character:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        .static-character {
+            position: absolute;
+            transform-origin: center bottom;
+            user-select: none;
+            pointer-events: auto;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            animation: none !important;
+            transition: transform 0.2s ease;
+        }
+
+        .static-character:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        .video-character {
+            position: absolute;
+            transform-origin: center bottom;
+            user-select: none;
+            pointer-events: none;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            background: transparent;
+            outline: none;
+            border: none;
+        }
+
+        /* 作礼动画 */
+        .salute {
+            animation: salute 2.5s infinite ease-in-out;
+        }
+        @keyframes salute {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            40% { transform: translate(-50%, -48%) rotate(-3deg); }
+            50% { transform: translate(-50%, -47%) rotate(-4deg); }
+            60% { transform: translate(-50%, -48%) rotate(-3deg); }
+            100% { transform: translate(-50%, -50%) rotate(0deg); }
+        }
+
+        /* 弹窗样式（带肖像布局） */
+        .character-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 0 40px rgba(255,255,255,0.2);
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        /* 人物肖像图 */
+        .modal-avatar {
+            width: 140px;
+            height: auto;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .modal-text {
+            flex: 1;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 26px;
+            color: #666;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .close-modal:hover {
+            color: red;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #222;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-desc {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #444;
+        }
+    </style>
+    <style>
+        /* 打鼓 */
+        .drummer {
+            animation: drum 1.2s infinite ease-in-out;
+        }
+        @keyframes drum {
+            0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+            50% { transform: translate(-50%, -55%) rotate(3deg); }
+        }
+
+        /* 吹奏 */
+        .wind-player {
+            animation: wind 1.5s infinite ease-in-out;
+        }
+        @keyframes wind {
+            0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+            50% { transform: translate(-45%, -50%) rotate(-2deg); }
+        }
+
+        /* 跪拜 */
+        .worshiper {
+            animation: worship 2s infinite ease;
+        }
+        @keyframes worship {
+            0%, 100% { transform: translate(-50%, -50%); }
+            50% { transform: translate(-50%, -58%); }
+        }
+
+        /* 仪仗 */
+        .guard {
+            animation: guard 2s infinite ease-in-out;
+        }
+        @keyframes guard {
+            0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+            50% { transform: translate(-50%, -50%) rotate(1deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="mural-container">
+        <div class="bg-wrapper">
+            <img src="background.jpg" class="mural-bg" id="muralBg" alt="回銮图">
+        </div>
+
+        <!-- 左下角作礼人群 -->
+        <img src="左6.png" class="character salute"
+             data-x="22" data-y="70" data-size="15"
+             data-char-type="salute" data-char-name="作礼官员" data-img="左6.png"
+             alt="作礼人物">
+        <img src="左1.png" class="character salute"
+             data-x="12" data-y="78" data-size="20"
+             data-char-type="salute" data-char-name="作礼官员" data-img="左1.png"
+             alt="作礼人物">
+        <img src="左2.png" class="character salute"
+             data-x="15" data-y="79" data-size="15"
+             data-char-type="salute" data-char-name="作礼侍从" data-img="左2.png"
+             alt="作礼人物">
+        <img src="左3.png" class="character salute"
+             data-x="17" data-y="78" data-size="15"
+             data-char-type="salute" data-char-name="作礼官员" data-img="左3.png"
+             alt="作礼人物">
+        <img src="左4.png" class="character salute"
+             data-x="19" data-y="78" data-size="15"
+             data-char-type="salute" data-char-name="作礼官员" data-img="左4.png"
+             alt="作礼人物">
+        <img src="左5.png" class="character salute"
+             data-x="23" data-y="78" data-size="15"
+             data-char-type="salute" data-char-name="作礼官员" data-img="左5.png"
+             alt="作礼人物">
+        <img src="左1.png" class="character salute"
+             data-x="16" data-y="88" data-size="20"
+             data-char-type="salute" data-char-name="作礼官员" data-img="左1.png"
+             alt="作礼人物">
+        <img src="左1.png" class="character salute"
+             data-x="20" data-y="88" data-size="20"
+             data-char-type="salute" data-char-name="作礼官员" data-img="左1.png"
+             alt="作礼人物">
+
+        <!-- 上方队伍 -->
+        <img src="上1.png" class="character drummer" 
+             data-x="35" data-y="55" data-size="17" 
+             data-char-type="windPlayer" data-char-name="吹奏乐师1" data-img="上1.png"
+             alt="吹奏人物">
+        <img src="上2.png" class="character wind-player" 
+             data-x="38" data-y="55" data-size="7"
+             data-char-type="windPlayer" data-char-name="吹奏乐师2" data-img="上2.png"
+             alt="吹奏人物">       
+         <img src="上4.png" class="character wind-player" 
+             data-x="52" data-y="55" data-size="17"
+             data-char-type="windPlayer" data-char-name="吹奏乐师2" data-img="上2.png"
+             alt="吹奏人物">              
+        <img src="上3.png" class="static-character" data-x="42" data-y="55" data-size="17" data-char-type="attendant" data-char-name="侍从" data-img="上3.png" alt="侍从">
+        <img src="上5.png" class="static-character" data-x="46" data-y="55" data-size="19" data-char-type="attendant" data-char-name="侍从1" data-img="上5.png" alt="">
+        <img src="上6.png" class="static-character" data-x="59" data-y="55" data-size="19" data-char-type="attendant" data-char-name="侍从2" data-img="上6.png" alt="">
+        <img src="上7.png" class="static-character" data-x="63" data-y="55" data-size="18" data-char-type="attendant" data-char-name="侍从" data-img="上7.png" alt="">
+        <img src="上8.png" class="static-character" data-x="66" data-y="55" data-size="19" data-char-type="attendant" data-char-name="侍从3" data-img="上8.png" alt="">
+        <img src="上9.png" class="static-character" data-x="69" data-y="55" data-size="19" data-char-type="attendant" data-char-name="侍从4" data-img="上9.png" alt="">
+        <img src="上10.png" class="static-character" data-x="72" data-y="55" data-size="19" data-char-type="attendant" data-char-name="侍从5" data-img="上10.png" alt="">
+        <img src="上11.png" class="static-character" data-x="75" data-y="55" data-size="19" data-char-type="attendant" data-char-name="侍从6" data-img="上11.png" alt="">
+        <img src="上12.png" class="static-character" data-x="80" data-y="55" data-size="19" data-char-type="attendant" data-char-name="侍从7" data-img="上12.png" alt="">
+        <img src="上13.png" class="static-character" data-x="83" data-y="55" data-size="19" data-char-type="attendant" data-char-name="侍从8" data-img="上13.png" alt="">
+        <img src="上14.png" class="static-character" data-x="86" data-y="55" data-size="19" data-char-type="attendant" data-char-name="侍从9" data-img="上14.png" alt="">
+        <img src="上15.png" class="static-character" data-x="90" data-y="55" data-size="19" data-char-type="attendant" data-char-name="侍从10" data-img="上15.png" alt="">
+        <img src="上16.png" class="static-character" data-x="95" data-y="55" data-size="19" data-char-type="attendant" data-char-name="侍从11" data-img="上16.png" alt="">
+    </div>
+
+    <!-- 弹窗 -->
+    <div class="character-modal" id="characterModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal">×</button>
+            <img class="modal-avatar" id="modalAvatar" src="">
+            <div class="modal-text">
+                <h2 class="modal-title" id="modalTitle">人物介绍</h2>
+                <div class="modal-desc" id="modalDesc">介绍内容</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const muralBg = document.getElementById('muralBg');
+        const allElements = document.querySelectorAll('.character, .static-character, .video-character');
+
+        // 精准匹配你HTML中的人物类型和名称的介绍数据
+        const characterData = {
+            // 打鼓乐师（drummer）- 包含你标注为"吹奏乐师1/侍从"的drummer类型
+            drummer: {
+                title: "打鼓乐师",
+                desc: "打鼓乐师是古代宫廷仪仗中的核心乐手，主要负责掌控仪仗队伍的节奏和韵律。在泰山天贶殿回銮仪式中，打鼓乐师使用羯鼓作为主要乐器，其鼓声雄浑有力，既彰显皇家威仪，又能统一队伍行进节奏。"
+            },
+            // 吹奏乐师（windPlayer）- 包含你标注为"吹奏乐师2/侍从"的windPlayer类型
+            windPlayer: {
+                title: "吹奏乐师",
+                desc: "吹奏乐师主要使用筚篥、横笛、笙等管乐器，演奏宫廷雅乐，曲调庄重典雅，是仪式中重要的听觉符号。"
+            },
+            // 作礼官员/侍从（salute）
+            salute: {
+                "作礼官员": {
+                    title: "作礼官员",
+                    desc: "作礼官员在回銮仪仗前行拱手作揖之礼，以示恭迎圣驾，动作徐缓庄重，体现祭祀仪式的肃穆威严。"
+                },
+                "作礼侍从": {
+                    title: "作礼侍从",
+                    desc: "作礼侍从跟随作礼官员行辅助礼仪，动作规范统一，是回銮仪式中礼仪环节的重要组成部分。"
+                }
+            },
+            // 宫廷侍从（attendant）- 所有标注为侍从1/2/3等的类型
+            attendant: {
+                title: "宫廷侍从",
+                desc: "侍从负责仪仗杂务、引导队列、传递器物，虽品级不高，却是保障仪式顺畅运转的重要角色。"
+            },
+            // 兜底：如果名称/类型不匹配时的默认内容
+            default: {
+                title: "回銮图人物",
+                desc: "此人物为泰山天贶殿回銮图中的仪仗成员，是古代帝王泰山祭祀回銮仪式的重要组成部分。"
+            }
+        };
+
+        const modal = document.getElementById('characterModal');
+        const modalAvatar = document.getElementById('modalAvatar');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDesc = document.getElementById('modalDesc');
+        const closeModal = document.getElementById('closeModal');
+
+        // 重构弹窗打开逻辑，精准匹配名称和类型
+        function openModal(charType, charName, imgSrc) {
+            let data = null;
+            
+            // 1. 优先匹配salute类型下的具体名称（作礼官员/作礼侍从）
+            if (charType === 'salute' && characterData.salute[charName]) {
+                data = characterData.salute[charName];
+            }
+            // 2. 匹配其他基础类型（drummer/windPlayer/attendant）
+            else if (characterData[charType] && characterData[charType].title) {
+                data = characterData[charType];
+            }
+            // 3. 兜底默认内容
+            else {
+                data = characterData.default;
+            }
+
+            // 设置弹窗内容（标题格式：自定义名称｜类型标题）
+            modalAvatar.src = imgSrc;
+            modalTitle.textContent = `${charName}｜${data.title}`;
+            modalDesc.textContent = data.desc;
+            
+            // 显示弹窗
+            modal.style.display = "flex";
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeModalFunc() {
+            modal.style.display = "none";
+            document.body.style.overflow = "";
+        }
+
+        // 绑定关闭事件
+        closeModal.onclick = closeModalFunc;
+        modal.onclick = e => e.target === modal && closeModalFunc();
+        document.addEventListener('keydown', e => e.key === 'Escape' && closeModalFunc());
+
+        // 绑定人物点击事件
+        document.querySelectorAll('.character, .static-character').forEach(el => {
+            el.addEventListener('click', e => {
+                e.stopPropagation();
+                const type = el.dataset.charType || 'default';
+                const name = el.dataset.charName || '未知人物';
+                const img = el.dataset.img || '';
+                openModal(type, name, img);
+            });
+        });
+
+        // 自适应布局逻辑（保持不变）
+        function updateElementPositions() {
+            const r = muralBg.getBoundingClientRect();
+            allElements.forEach(el => {
+                const x = r.left + r.width * el.dataset.x / 100;
+                const y = r.top + r.height * el.dataset.y / 100;
+                const w = r.width * el.dataset.size / 100;
+                el.style.left = x + 'px';
+                el.style.top = y + 'px';
+                el.style.width = w + 'px';
+                if (el.tagName === 'VIDEO') el.style.height = 'auto';
+            });
+        }
+
+        window.addEventListener('load', updateElementPositions);
+        window.addEventListener('resize', updateElementPositions);
+        muralBg.onload = updateElementPositions;
+
+        document.querySelectorAll('.video-character').forEach(v => {
+            v.onloadedmetadata = updateElementPositions;
+        });
+    </script>
+</body>
+</html>
